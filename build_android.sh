@@ -17,7 +17,6 @@ cleanup() {
     # Restore bin configuration in Cargo.toml
     if [ ! -z "$BIN_CONFIG" ]; then
         echo "Restoring bin configuration in Cargo.toml..."
-        echo "" >> Cargo.toml  # Add a newline for cleaner separation
         echo "$BIN_CONFIG" >> Cargo.toml
         echo "Bin configuration restored"
     fi
