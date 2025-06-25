@@ -1,6 +1,6 @@
 [package]
 name = "bitkitcore"
-version = "0.1.3"
+version = "0.1.4"
 edition = "2021"
 
 [lib]
@@ -51,6 +51,7 @@ rustflags = [
 rustflags = [
     "-C", "link-arg=-Wl,--allow-multiple-definition",
 ]
+
 
 [[bin]]
 name = "example"
