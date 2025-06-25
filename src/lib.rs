@@ -42,12 +42,18 @@ fn ensure_runtime() -> &'static Runtime {
 
 #[uniffi::export]
 pub async fn decode(invoice: String) -> Result<Scanner, DecodingError> {
-    Scanner::decode(invoice).await
+    let rt = ensure_runtime();
+    rt.spawn(async move {
+        Scanner::decode(invoice).await
+    }).await.unwrap()
 }
 
 #[uniffi::export]
 pub async fn get_lnurl_invoice(address: String, amount_satoshis: u64) -> Result<String, lnurl::LnurlError> {
-    lnurl::get_lnurl_invoice(&address, amount_satoshis).await
+    let rt = ensure_runtime();
+    rt.spawn(async move {
+        lnurl::get_lnurl_invoice(&address, amount_satoshis).await
+    }).await.unwrap()
 }
 
 #[uniffi::export]
