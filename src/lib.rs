@@ -21,6 +21,10 @@ use tokio::runtime::Runtime;
 use tokio::sync::Mutex as TokioMutex;
 use crate::modules::trezor;
 use crate::modules::trezor::{AccountInfoDetails, AmountUnit, CommonParams, ComposeAccount, ComposeOutput, ComposeTransactionParams, DeepLinkResult, DefaultAccountType, FeeLevel, GetAccountInfoParams, GetAddressParams, MultisigRedeemScriptType, RefTransaction, SignMessageParams, SignTransactionParams, TokenFilter, TrezorConnectError, TrezorEnvironment, TrezorResponsePayload, TxAckPaymentRequest, TxInputType, TxOutputType, UnlockPath, VerifyMessageParams, XrpMarker};
+use bip39::Mnemonic;
+use bitcoin::bip32::Xpriv;
+use bitcoin::Network as BitcoinNetwork;
+use std::str::FromStr;
 
 pub struct DatabaseConnections {
     activity_db: Option<ActivityDB>,
@@ -53,6 +57,85 @@ pub async fn get_lnurl_invoice(address: String, amount_satoshis: u64) -> Result<
     let rt = ensure_runtime();
     rt.spawn(async move {
         lnurl::get_lnurl_invoice(&address, amount_satoshis).await
+    }).await.unwrap()
+}
+
+#[uniffi::export]
+pub fn create_channel_request_url(
+    k1: String,
+    callback: String,
+    local_node_id: String,
+    is_private: bool,
+    cancel: bool,
+) -> Result<String, lnurl::LnurlError> {
+    let params = lnurl::ChannelRequestParams {
+        k1,
+        callback,
+        local_node_id,
+        is_private,
+        cancel,
+    };
+    lnurl::create_channel_request_url(params)
+}
+
+#[uniffi::export]
+pub fn create_withdraw_callback_url(
+    k1: String,
+    callback: String,
+    payment_request: String,
+) -> Result<String, lnurl::LnurlError> {
+    let params = lnurl::WithdrawCallbackParams {
+        k1,
+        callback,
+        payment_request,
+    };
+    lnurl::create_withdraw_callback_url(params)
+}
+
+#[uniffi::export]
+pub async fn lnurl_auth(
+    domain: String,
+    k1: String,
+    callback: String,
+    bip32_mnemonic: String,
+    network: Option<Network>,
+    bip39_passphrase: Option<String>,
+) -> Result<String, lnurl::LnurlError> {
+    let mnemonic = Mnemonic::parse(&bip32_mnemonic)
+        .map_err(|_| lnurl::LnurlError::AuthenticationFailed)?;
+    
+    let bitcoin_network = match network.unwrap_or(Network::Bitcoin) {
+        Network::Bitcoin => BitcoinNetwork::Bitcoin,
+        Network::Testnet => BitcoinNetwork::Testnet,
+        Network::Testnet4 => BitcoinNetwork::Testnet,
+        Network::Signet => BitcoinNetwork::Signet,
+        Network::Regtest => BitcoinNetwork::Regtest,
+    };
+    
+    let seed = mnemonic.to_seed(bip39_passphrase.as_deref().unwrap_or(""));
+    let root = Xpriv::new_master(bitcoin_network, &seed)
+        .map_err(|_| lnurl::LnurlError::AuthenticationFailed)?;
+    
+    // Derive hashing key using m/138'/0 path (as per LUD-05)
+    let hashing_path = bitcoin::bip32::DerivationPath::from_str("m/138'/0")
+        .map_err(|_| lnurl::LnurlError::AuthenticationFailed)?;
+    
+    let secp = bitcoin::secp256k1::Secp256k1::new();
+    let hashing_key_xpriv = root.derive_priv(&secp, &hashing_path)
+        .map_err(|_| lnurl::LnurlError::AuthenticationFailed)?;
+    
+    let hashing_key_bytes = hashing_key_xpriv.private_key.secret_bytes();
+    
+    let params = lnurl::LnurlAuthParams {
+        domain,
+        k1,
+        callback,
+        hashing_key: hashing_key_bytes,
+    };
+    
+    let rt = ensure_runtime();
+    rt.spawn(async move {
+        lnurl::lnurl_auth(params).await
     }).await.unwrap()
 }
 

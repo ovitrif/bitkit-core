@@ -463,9 +463,13 @@ def _uniffi_check_contract_api_version(lib):
 def _uniffi_check_api_checksums(lib):
     if lib.uniffi_bitkitcore_checksum_func_add_tags() != 63739:
         raise InternalError("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
+    if lib.uniffi_bitkitcore_checksum_func_create_channel_request_url() != 9305:
+        raise InternalError("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
     if lib.uniffi_bitkitcore_checksum_func_create_cjit_entry() != 51504:
         raise InternalError("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
     if lib.uniffi_bitkitcore_checksum_func_create_order() != 33461:
+        raise InternalError("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
+    if lib.uniffi_bitkitcore_checksum_func_create_withdraw_callback_url() != 39350:
         raise InternalError("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
     if lib.uniffi_bitkitcore_checksum_func_decode() != 28437:
         raise InternalError("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
@@ -506,6 +510,8 @@ def _uniffi_check_api_checksums(lib):
     if lib.uniffi_bitkitcore_checksum_func_init_db() != 9643:
         raise InternalError("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
     if lib.uniffi_bitkitcore_checksum_func_insert_activity() != 1510:
+        raise InternalError("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
+    if lib.uniffi_bitkitcore_checksum_func_lnurl_auth() != 58593:
         raise InternalError("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
     if lib.uniffi_bitkitcore_checksum_func_open_channel() != 21402:
         raise InternalError("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
@@ -665,6 +671,15 @@ _UniffiLib.uniffi_bitkitcore_fn_func_add_tags.argtypes = (
     ctypes.POINTER(_UniffiRustCallStatus),
 )
 _UniffiLib.uniffi_bitkitcore_fn_func_add_tags.restype = None
+_UniffiLib.uniffi_bitkitcore_fn_func_create_channel_request_url.argtypes = (
+    _UniffiRustBuffer,
+    _UniffiRustBuffer,
+    _UniffiRustBuffer,
+    ctypes.c_int8,
+    ctypes.c_int8,
+    ctypes.POINTER(_UniffiRustCallStatus),
+)
+_UniffiLib.uniffi_bitkitcore_fn_func_create_channel_request_url.restype = _UniffiRustBuffer
 _UniffiLib.uniffi_bitkitcore_fn_func_create_cjit_entry.argtypes = (
     ctypes.c_uint64,
     ctypes.c_uint64,
@@ -680,6 +695,13 @@ _UniffiLib.uniffi_bitkitcore_fn_func_create_order.argtypes = (
     _UniffiRustBuffer,
 )
 _UniffiLib.uniffi_bitkitcore_fn_func_create_order.restype = ctypes.c_uint64
+_UniffiLib.uniffi_bitkitcore_fn_func_create_withdraw_callback_url.argtypes = (
+    _UniffiRustBuffer,
+    _UniffiRustBuffer,
+    _UniffiRustBuffer,
+    ctypes.POINTER(_UniffiRustCallStatus),
+)
+_UniffiLib.uniffi_bitkitcore_fn_func_create_withdraw_callback_url.restype = _UniffiRustBuffer
 _UniffiLib.uniffi_bitkitcore_fn_func_decode.argtypes = (
     _UniffiRustBuffer,
 )
@@ -801,6 +823,15 @@ _UniffiLib.uniffi_bitkitcore_fn_func_insert_activity.argtypes = (
     ctypes.POINTER(_UniffiRustCallStatus),
 )
 _UniffiLib.uniffi_bitkitcore_fn_func_insert_activity.restype = None
+_UniffiLib.uniffi_bitkitcore_fn_func_lnurl_auth.argtypes = (
+    _UniffiRustBuffer,
+    _UniffiRustBuffer,
+    _UniffiRustBuffer,
+    _UniffiRustBuffer,
+    _UniffiRustBuffer,
+    _UniffiRustBuffer,
+)
+_UniffiLib.uniffi_bitkitcore_fn_func_lnurl_auth.restype = ctypes.c_uint64
 _UniffiLib.uniffi_bitkitcore_fn_func_open_channel.argtypes = (
     _UniffiRustBuffer,
     _UniffiRustBuffer,
@@ -1269,12 +1300,18 @@ _UniffiLib.ffi_bitkitcore_rust_future_complete_void.restype = None
 _UniffiLib.uniffi_bitkitcore_checksum_func_add_tags.argtypes = (
 )
 _UniffiLib.uniffi_bitkitcore_checksum_func_add_tags.restype = ctypes.c_uint16
+_UniffiLib.uniffi_bitkitcore_checksum_func_create_channel_request_url.argtypes = (
+)
+_UniffiLib.uniffi_bitkitcore_checksum_func_create_channel_request_url.restype = ctypes.c_uint16
 _UniffiLib.uniffi_bitkitcore_checksum_func_create_cjit_entry.argtypes = (
 )
 _UniffiLib.uniffi_bitkitcore_checksum_func_create_cjit_entry.restype = ctypes.c_uint16
 _UniffiLib.uniffi_bitkitcore_checksum_func_create_order.argtypes = (
 )
 _UniffiLib.uniffi_bitkitcore_checksum_func_create_order.restype = ctypes.c_uint16
+_UniffiLib.uniffi_bitkitcore_checksum_func_create_withdraw_callback_url.argtypes = (
+)
+_UniffiLib.uniffi_bitkitcore_checksum_func_create_withdraw_callback_url.restype = ctypes.c_uint16
 _UniffiLib.uniffi_bitkitcore_checksum_func_decode.argtypes = (
 )
 _UniffiLib.uniffi_bitkitcore_checksum_func_decode.restype = ctypes.c_uint16
@@ -1335,6 +1372,9 @@ _UniffiLib.uniffi_bitkitcore_checksum_func_init_db.restype = ctypes.c_uint16
 _UniffiLib.uniffi_bitkitcore_checksum_func_insert_activity.argtypes = (
 )
 _UniffiLib.uniffi_bitkitcore_checksum_func_insert_activity.restype = ctypes.c_uint16
+_UniffiLib.uniffi_bitkitcore_checksum_func_lnurl_auth.argtypes = (
+)
+_UniffiLib.uniffi_bitkitcore_checksum_func_lnurl_auth.restype = ctypes.c_uint16
 _UniffiLib.uniffi_bitkitcore_checksum_func_open_channel.argtypes = (
 )
 _UniffiLib.uniffi_bitkitcore_checksum_func_open_channel.restype = ctypes.c_uint16
@@ -8643,6 +8683,13 @@ class LnurlError:  # type: ignore
         def __repr__(self):
             return "LnurlError.InvoiceCreationFailed({})".format(str(self))
     _UniffiTempLnurlError.InvoiceCreationFailed = InvoiceCreationFailed # type: ignore
+    class AuthenticationFailed(_UniffiTempLnurlError):
+
+        def __init__(self):
+            pass
+        def __repr__(self):
+            return "LnurlError.AuthenticationFailed({})".format(str(self))
+    _UniffiTempLnurlError.AuthenticationFailed = AuthenticationFailed # type: ignore
 
 LnurlError = _UniffiTempLnurlError # type: ignore
 del _UniffiTempLnurlError
@@ -8674,6 +8721,9 @@ class _UniffiConverterTypeLnurlError(_UniffiConverterRustBuffer):
             return LnurlError.InvoiceCreationFailed(
                 error_details=_UniffiConverterString.read(buf),
             )
+        if variant == 7:
+            return LnurlError.AuthenticationFailed(
+            )
         raise InternalError("Raw enum value doesn't match any cases")
 
     @staticmethod
@@ -8694,6 +8744,8 @@ class _UniffiConverterTypeLnurlError(_UniffiConverterRustBuffer):
         if isinstance(value, LnurlError.InvoiceCreationFailed):
             _UniffiConverterString.check_lower(value.error_details)
             return
+        if isinstance(value, LnurlError.AuthenticationFailed):
+            return
 
     @staticmethod
     def write(value, buf):
@@ -8713,6 +8765,8 @@ class _UniffiConverterTypeLnurlError(_UniffiConverterRustBuffer):
         if isinstance(value, LnurlError.InvoiceCreationFailed):
             buf.write_i32(6)
             _UniffiConverterString.write(value.error_details, buf)
+        if isinstance(value, LnurlError.AuthenticationFailed):
+            buf.write_i32(7)
 
 
 
@@ -12180,6 +12234,25 @@ def add_tags(activity_id: "str",tags: "typing.List[str]") -> None:
         _UniffiConverterString.lower(activity_id),
         _UniffiConverterSequenceString.lower(tags))
 
+
+def create_channel_request_url(k1: "str",callback: "str",local_node_id: "str",is_private: "bool",cancel: "bool") -> "str":
+    _UniffiConverterString.check_lower(k1)
+    
+    _UniffiConverterString.check_lower(callback)
+    
+    _UniffiConverterString.check_lower(local_node_id)
+    
+    _UniffiConverterBool.check_lower(is_private)
+    
+    _UniffiConverterBool.check_lower(cancel)
+    
+    return _UniffiConverterString.lift(_rust_call_with_error(_UniffiConverterTypeLnurlError,_UniffiLib.uniffi_bitkitcore_fn_func_create_channel_request_url,
+        _UniffiConverterString.lower(k1),
+        _UniffiConverterString.lower(callback),
+        _UniffiConverterString.lower(local_node_id),
+        _UniffiConverterBool.lower(is_private),
+        _UniffiConverterBool.lower(cancel)))
+
 async def create_cjit_entry(channel_size_sat: "int",invoice_sat: "int",invoice_description: "str",node_id: "str",channel_expiry_weeks: "int",options: "typing.Optional[CreateCjitOptions]") -> "IcJitEntry":
 
     _UniffiConverterUInt64.check_lower(channel_size_sat)
@@ -12235,6 +12308,19 @@ async def create_order(lsp_balance_sat: "int",channel_expiry_weeks: "int",option
 _UniffiConverterTypeBlocktankError,
 
     )
+
+def create_withdraw_callback_url(k1: "str",callback: "str",payment_request: "str") -> "str":
+    _UniffiConverterString.check_lower(k1)
+    
+    _UniffiConverterString.check_lower(callback)
+    
+    _UniffiConverterString.check_lower(payment_request)
+    
+    return _UniffiConverterString.lift(_rust_call_with_error(_UniffiConverterTypeLnurlError,_UniffiLib.uniffi_bitkitcore_fn_func_create_withdraw_callback_url,
+        _UniffiConverterString.lower(k1),
+        _UniffiConverterString.lower(callback),
+        _UniffiConverterString.lower(payment_request)))
+
 async def decode(invoice: "str") -> "Scanner":
 
     _UniffiConverterString.check_lower(invoice)
@@ -12542,6 +12628,38 @@ def insert_activity(activity: "Activity") -> None:
     _rust_call_with_error(_UniffiConverterTypeActivityError,_UniffiLib.uniffi_bitkitcore_fn_func_insert_activity,
         _UniffiConverterTypeActivity.lower(activity))
 
+async def lnurl_auth(domain: "str",k1: "str",callback: "str",bip32_mnemonic: "str",network: "typing.Optional[Network]",bip39_passphrase: "typing.Optional[str]") -> "str":
+
+    _UniffiConverterString.check_lower(domain)
+    
+    _UniffiConverterString.check_lower(k1)
+    
+    _UniffiConverterString.check_lower(callback)
+    
+    _UniffiConverterString.check_lower(bip32_mnemonic)
+    
+    _UniffiConverterOptionalTypeNetwork.check_lower(network)
+    
+    _UniffiConverterOptionalString.check_lower(bip39_passphrase)
+    
+    return await _uniffi_rust_call_async(
+        _UniffiLib.uniffi_bitkitcore_fn_func_lnurl_auth(
+        _UniffiConverterString.lower(domain),
+        _UniffiConverterString.lower(k1),
+        _UniffiConverterString.lower(callback),
+        _UniffiConverterString.lower(bip32_mnemonic),
+        _UniffiConverterOptionalTypeNetwork.lower(network),
+        _UniffiConverterOptionalString.lower(bip39_passphrase)),
+        _UniffiLib.ffi_bitkitcore_rust_future_poll_rust_buffer,
+        _UniffiLib.ffi_bitkitcore_rust_future_complete_rust_buffer,
+        _UniffiLib.ffi_bitkitcore_rust_future_free_rust_buffer,
+        # lift function
+        _UniffiConverterString.lift,
+        
+    # Error FFI converter
+_UniffiConverterTypeLnurlError,
+
+    )
 async def open_channel(order_id: "str",connection_string: "str") -> "IBtOrder":
 
     _UniffiConverterString.check_lower(order_id)
@@ -13213,8 +13331,10 @@ __all__ = [
     "VerifyMessageResponse",
     "XrpMarker",
     "add_tags",
+    "create_channel_request_url",
     "create_cjit_entry",
     "create_order",
+    "create_withdraw_callback_url",
     "decode",
     "delete_activity_by_id",
     "derive_bitcoin_address",
@@ -13235,6 +13355,7 @@ __all__ = [
     "get_tags",
     "init_db",
     "insert_activity",
+    "lnurl_auth",
     "open_channel",
     "refresh_active_cjit_entries",
     "refresh_active_orders",

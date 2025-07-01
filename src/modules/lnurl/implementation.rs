@@ -1,7 +1,11 @@
 use std::str::FromStr;
-use lnurl::{LnUrlResponse, AsyncClient, Builder};
+use lnurl::{LnUrlResponse, AsyncClient, Builder, Response, get_derivation_path};
 use lnurl::lightning_address::LightningAddress;
-use crate::lnurl::LnurlError;
+use lnurl::lnurl::LnUrl;
+use url::Url;
+use bitcoin::secp256k1::{PublicKey, Secp256k1, Message};
+use bitcoin::bip32::Xpriv;
+use crate::lnurl::{LnurlError, ChannelRequestParams, WithdrawCallbackParams, LnurlAuthParams};
 
 pub async fn get_lnurl_invoice(address: &str, amount_satoshis: u64) -> Result<String, LnurlError> {
     let ln_addr = match parse_lightning_address(address) {
@@ -65,4 +69,66 @@ async fn generate_invoice(
         .map_err(|e| LnurlError::InvoiceCreationFailed {
             error_details: e.to_string(),
         })
+}
+
+pub fn create_channel_request_url(params: ChannelRequestParams) -> Result<String, LnurlError> {
+    let mut url = Url::parse(&params.callback)
+        .map_err(|_| LnurlError::InvalidAddress)?;
+    
+    url.query_pairs_mut()
+        .append_pair("k1", &params.k1)
+        .append_pair("remoteid", &params.local_node_id)
+        .append_pair("private", if params.is_private { "1" } else { "0" })
+        .append_pair("cancel", if params.cancel { "1" } else { "0" });
+    
+    Ok(url.to_string())
+}
+
+pub fn create_withdraw_callback_url(params: WithdrawCallbackParams) -> Result<String, LnurlError> {
+    let mut url = Url::parse(&params.callback)
+        .map_err(|_| LnurlError::InvalidAddress)?;
+    
+    url.query_pairs_mut()
+        .append_pair("k1", &params.k1)
+        .append_pair("pr", &params.payment_request);
+    
+    Ok(url.to_string())
+}
+
+pub async fn lnurl_auth(params: LnurlAuthParams) -> Result<String, LnurlError> {
+    let domain_url = Url::parse(&format!("https://{}", params.domain))
+        .map_err(|_| LnurlError::InvalidAddress)?;
+    
+    let derivation_path = get_derivation_path(params.hashing_key, &domain_url)
+        .map_err(|_| LnurlError::AuthenticationFailed)?;
+    
+    let secp = Secp256k1::new();
+    let master_key = Xpriv::new_master(bitcoin::Network::Bitcoin, &params.hashing_key)
+        .map_err(|_| LnurlError::AuthenticationFailed)?;
+    
+    let derived_key = master_key.derive_priv(&secp, &derivation_path)
+        .map_err(|_| LnurlError::AuthenticationFailed)?;
+    
+    let private_key = derived_key.private_key;
+    let public_key = PublicKey::from_secret_key(&secp, &private_key);
+    
+    let k1_bytes = hex::decode(&params.k1)
+        .map_err(|_| LnurlError::AuthenticationFailed)?;
+    let message = Message::from_digest_slice(&k1_bytes)
+        .map_err(|_| LnurlError::AuthenticationFailed)?;
+    
+    let signature = secp.sign_ecdsa(&message, &private_key);
+    
+    let lnurl = LnUrl::from_str(&params.callback)
+        .map_err(|_| LnurlError::InvalidAddress)?;
+    
+    let client = create_async_client()?;
+    
+    let response = client.lnurl_auth(lnurl, signature, public_key).await
+        .map_err(|_| LnurlError::RequestFailed)?;
+    
+    match response {
+        Response::Ok { .. } => Ok("Authentication successful".to_string()),
+        Response::Error { reason: _ } => Err(LnurlError::AuthenticationFailed),
+    }
 }

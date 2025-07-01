@@ -9036,6 +9036,7 @@ public enum LnurlError {
     )
     case InvoiceCreationFailed(errorDetails: String
     )
+    case AuthenticationFailed
 }
 
 
@@ -9061,6 +9062,7 @@ public struct FfiConverterTypeLnurlError: FfiConverterRustBuffer {
         case 6: return .InvoiceCreationFailed(
             errorDetails: try FfiConverterString.read(from: &buf)
             )
+        case 7: return .AuthenticationFailed
 
          default: throw UniffiInternalError.unexpectedEnumCase
         }
@@ -9100,6 +9102,10 @@ public struct FfiConverterTypeLnurlError: FfiConverterRustBuffer {
             writeInt(&buf, Int32(6))
             FfiConverterString.write(errorDetails, into: &buf)
             
+        
+        case .AuthenticationFailed:
+            writeInt(&buf, Int32(7))
+        
         }
     }
 }
@@ -11878,6 +11884,17 @@ public func addTags(activityId: String, tags: [String])throws  {try rustCallWith
     )
 }
 }
+public func createChannelRequestUrl(k1: String, callback: String, localNodeId: String, isPrivate: Bool, cancel: Bool)throws  -> String {
+    return try  FfiConverterString.lift(try rustCallWithError(FfiConverterTypeLnurlError.lift) {
+    uniffi_bitkitcore_fn_func_create_channel_request_url(
+        FfiConverterString.lower(k1),
+        FfiConverterString.lower(callback),
+        FfiConverterString.lower(localNodeId),
+        FfiConverterBool.lower(isPrivate),
+        FfiConverterBool.lower(cancel),$0
+    )
+})
+}
 public func createCjitEntry(channelSizeSat: UInt64, invoiceSat: UInt64, invoiceDescription: String, nodeId: String, channelExpiryWeeks: UInt32, options: CreateCjitOptions?)async throws  -> IcJitEntry {
     return
         try  await uniffiRustCallAsync(
@@ -11905,6 +11922,15 @@ public func createOrder(lspBalanceSat: UInt64, channelExpiryWeeks: UInt32, optio
             liftFunc: FfiConverterTypeIBtOrder.lift,
             errorHandler: FfiConverterTypeBlocktankError.lift
         )
+}
+public func createWithdrawCallbackUrl(k1: String, callback: String, paymentRequest: String)throws  -> String {
+    return try  FfiConverterString.lift(try rustCallWithError(FfiConverterTypeLnurlError.lift) {
+    uniffi_bitkitcore_fn_func_create_withdraw_callback_url(
+        FfiConverterString.lower(k1),
+        FfiConverterString.lower(callback),
+        FfiConverterString.lower(paymentRequest),$0
+    )
+})
 }
 public func decode(invoice: String)async throws  -> Scanner {
     return
@@ -12120,6 +12146,20 @@ public func insertActivity(activity: Activity)throws  {try rustCallWithError(Ffi
         FfiConverterTypeActivity.lower(activity),$0
     )
 }
+}
+public func lnurlAuth(domain: String, k1: String, callback: String, bip32Mnemonic: String, network: Network?, bip39Passphrase: String?)async throws  -> String {
+    return
+        try  await uniffiRustCallAsync(
+            rustFutureFunc: {
+                uniffi_bitkitcore_fn_func_lnurl_auth(FfiConverterString.lower(domain),FfiConverterString.lower(k1),FfiConverterString.lower(callback),FfiConverterString.lower(bip32Mnemonic),FfiConverterOptionTypeNetwork.lower(network),FfiConverterOptionString.lower(bip39Passphrase)
+                )
+            },
+            pollFunc: ffi_bitkitcore_rust_future_poll_rust_buffer,
+            completeFunc: ffi_bitkitcore_rust_future_complete_rust_buffer,
+            freeFunc: ffi_bitkitcore_rust_future_free_rust_buffer,
+            liftFunc: FfiConverterString.lift,
+            errorHandler: FfiConverterTypeLnurlError.lift
+        )
 }
 public func openChannel(orderId: String, connectionString: String)async throws  -> IBtOrder {
     return
@@ -12461,10 +12501,16 @@ private var initializationResult: InitializationResult {
     if (uniffi_bitkitcore_checksum_func_add_tags() != 63739) {
         return InitializationResult.apiChecksumMismatch
     }
+    if (uniffi_bitkitcore_checksum_func_create_channel_request_url() != 9305) {
+        return InitializationResult.apiChecksumMismatch
+    }
     if (uniffi_bitkitcore_checksum_func_create_cjit_entry() != 51504) {
         return InitializationResult.apiChecksumMismatch
     }
     if (uniffi_bitkitcore_checksum_func_create_order() != 33461) {
+        return InitializationResult.apiChecksumMismatch
+    }
+    if (uniffi_bitkitcore_checksum_func_create_withdraw_callback_url() != 39350) {
         return InitializationResult.apiChecksumMismatch
     }
     if (uniffi_bitkitcore_checksum_func_decode() != 28437) {
@@ -12525,6 +12571,9 @@ private var initializationResult: InitializationResult {
         return InitializationResult.apiChecksumMismatch
     }
     if (uniffi_bitkitcore_checksum_func_insert_activity() != 1510) {
+        return InitializationResult.apiChecksumMismatch
+    }
+    if (uniffi_bitkitcore_checksum_func_lnurl_auth() != 58593) {
         return InitializationResult.apiChecksumMismatch
     }
     if (uniffi_bitkitcore_checksum_func_open_channel() != 21402) {
