@@ -17,7 +17,7 @@ The Scanner module is the core component for decoding and parsing various types 
     - LNURL-channel
   - Node connection string parsing
 - Pubky authentication string handling
-- Treasure Hunt and Orange Ticket decoding
+- Gift code decoding (format: bitkit://gift-<code>-<amount>)
 
 ## Usage Examples
 
@@ -112,13 +112,10 @@ func decodeInvoice() async {
             print("URL: \(url)")
             print("Network: \(network)")
             
-        case .treasureHunt(let chestId):
-            print("Treasure Hunt:")
-            print("Chest ID: \(chestId)")
-            
-        case .orangeTicket(let ticketId):
-            print("Orange Ticket:")
-            print("Ticket ID: \(ticketId)")
+        case .gift(let code, let amount):
+            print("Gift Code:")
+            print("Code: \(code)")
+            print("Amount: \(amount) sats")
             
         case .pubkyAuth(let auth):
             print("pubky Auth:")
@@ -240,14 +237,10 @@ suspend fun decodeInvoice() {
                 println("Network: ${result.network}")
             }
             
-            is Scanner.TreasureHunt -> {
-                println("Treasure Hunt:")
-                println("Chest ID: ${result.chestId}")
-            }
-            
-            is Scanner.OrangeTicket -> {
-                println("Orange Ticket:")
-                println("Ticket ID: ${result.ticketId}")
+            is Scanner.Gift -> {
+                println("Gift Code:")
+                println("Code: ${result.code}")
+                println("Amount: ${result.amount} sats")
             }
             
             is Scanner.PubkyAuth -> {
@@ -357,13 +350,10 @@ try:
     print(f"URL: {result.url}")
     print(f"Network: {result.network}")
 
-  elif isinstance(result, Scanner.TreasureHunt):
-    print("Treasure Hunt:")
-    print(f"Chest ID: {result.chest_id}")
-
-  elif isinstance(result, Scanner.OrangeTicket):
-    print("Orange Ticket:")
-    print(f"Ticket ID: {result.ticket_id}")
+  elif isinstance(result, Scanner.Gift):
+    print("Gift Code:")
+    print(f"Code: {result.code}")
+    print(f"Amount: {result.amount} sats")
 
   elif isinstance(result, Scanner.PubkyAuth):
     print("pubky Auth:")
@@ -409,6 +399,7 @@ The Scanner can decode:
 - Lightning Addresses
 - BIP21 Bitcoin URIs
 - Pubky authentication strings
+- Gift codes (format: bitkit://gift-<code>-<amount>)
 
 ## Error Handling
 

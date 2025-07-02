@@ -100,14 +100,10 @@ fn handle_decode_result(result: Result<Scanner, DecodingError>) {
             println!("Type: {}", if url.contains("onion") { "Tor" } else { "Clearnet" });
         }
 
-        Ok(Scanner::TreasureHunt { chest_id }) => {
-            println!("\nSuccessfully decoded Treasure Hunt:");
-            println!("Chest ID: {}", chest_id);
-        }
-
-        Ok(Scanner::OrangeTicket { ticket_id }) => {
-            println!("\nSuccessfully decoded Orange Ticket:");
-            println!("Ticket ID: {}", ticket_id);
+        Ok(Scanner::Gift { code, amount }) => {
+            println!("\nSuccessfully decoded Gift Code:");
+            println!("Code: {}", code);
+            println!("Amount: {} sats", amount);
         }
 
         Err(e) => {
@@ -132,5 +128,17 @@ async fn main() {
     let random_string = "random_string";
     let tor_node_id = "72413cc3e96168cb4320f992bfa483865133dc28d@3phi2gcmu3nsbvux53hixrxjgyg3u6vd6kqy3yq6rlrvudqrjsxir6id.onion:9735";
     let node_id = "039b8b4dd1d88c2c5db374290cda397a8f5d79f312d6ea5d5bfdfc7c6ff363eae3@34.65.111.104:9735";
+    let gift_code = "bitkit://gift-ABC123XYZ-50000";
+    let invalid_gift_code = "bitkit://gift-TEST-notanumber";
+
+    // Test gift code parsing
+    println!("\n=== Testing Gift Code Parsing ===");
+    println!("Decoding: {}", gift_code);
+    handle_decode_result(Scanner::decode(gift_code.to_string()).await);
+    
+    // Test with invalid amount
+    println!("\nDecoding invalid gift code: {}", invalid_gift_code);
+    handle_decode_result(Scanner::decode(invalid_gift_code.to_string()).await);
+    
     handle_decode_result(Scanner::decode(lnurl_address.to_string()).await);
 }
