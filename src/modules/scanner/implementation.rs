@@ -47,40 +47,22 @@ impl Scanner {
         // Handle Bitkit deep links
         if invoice_str.starts_with("bitkit://") {
             let data = invoice_str.replace("bitkit://", "");
+            
+            // Check if it's a gift code format: bitkit://gift-<code>-<amount>
+            if data.starts_with("gift-") {
+                let parts: Vec<&str> = data.splitn(3, '-').collect();
+                if parts.len() == 3 && parts[0] == "gift" {
+                    let code = parts[1];
+                    let amount = parts[2].parse::<u64>()
+                        .map_err(|_| DecodingError::InvalidFormat)?;
+                    return Ok(Scanner::Gift {
+                        code: code.to_string(),
+                        amount,
+                    });
+                }
+            }
+            
             return Box::pin(Self::decode(data)).await;
-        }
-
-        // Orange Ticket handling
-        if invoice_str.starts_with("ticket-") {
-            let ticket_id = invoice_str.splitn(2, '-').nth(1)
-                .ok_or(DecodingError::InvalidFormat)?;
-            return Ok(Scanner::OrangeTicket {
-                ticket_id: ticket_id.to_string()
-            });
-        }
-
-        // Treasure Hunt handling
-        if invoice_str.contains("cutt.ly/VwQFzhJJ") || invoice_str.contains("bitkit.to/drone") {
-            return Ok(Scanner::TreasureHunt {
-                chest_id: "2gZxrqhc".to_string()
-            });
-        }
-
-        if invoice_str.contains("bitkit.to/treasure-hunt") {
-            let url = Url::parse(&invoice_str).map_err(|_| DecodingError::InvalidFormat)?;
-            if let Some(chest_id) = url.query_pairs()
-                .find(|(key, _)| key == "chest")
-                .map(|(_, value)| value.into_owned()) {
-                return Ok(Scanner::TreasureHunt { chest_id });
-            }
-        }
-
-        if invoice_str.contains("bitkit:chest") {
-            if let Some(chest_id) = invoice_str.split('-').nth(1) {
-                return Ok(Scanner::TreasureHunt {
-                    chest_id: chest_id.to_string()
-                });
-            }
         }
 
         // Node connection string handling

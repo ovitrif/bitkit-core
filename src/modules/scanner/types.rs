@@ -128,6 +128,5 @@ pub enum Scanner {
     LnurlAddress { data: LnurlAddressData },
     LnurlPay { data: LnurlPayData },
     NodeId { url: String, network: NetworkType },
-    TreasureHunt { chest_id: String },
-    OrangeTicket { ticket_id: String },
+    Gift { code: String, amount: u64 },
 }
