@@ -21,4 +21,6 @@ pub enum LnurlError {
     InvoiceCreationFailed {
         error_details: String,
     },
+    #[error("LNURL authentication failed")]
+    AuthenticationFailed,
 }

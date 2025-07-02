@@ -256,6 +256,11 @@ typedef void (*UniffiForeignFutureCompleteVoid)(uint64_t, UniffiForeignFutureStr
 void uniffi_bitkitcore_fn_func_add_tags(RustBuffer activity_id, RustBuffer tags, RustCallStatus *_Nonnull out_status
 );
 #endif
+#ifndef UNIFFI_FFIDEF_UNIFFI_BITKITCORE_FN_FUNC_CREATE_CHANNEL_REQUEST_URL
+#define UNIFFI_FFIDEF_UNIFFI_BITKITCORE_FN_FUNC_CREATE_CHANNEL_REQUEST_URL
+RustBuffer uniffi_bitkitcore_fn_func_create_channel_request_url(RustBuffer k1, RustBuffer callback, RustBuffer local_node_id, int8_t is_private, int8_t cancel, RustCallStatus *_Nonnull out_status
+);
+#endif
 #ifndef UNIFFI_FFIDEF_UNIFFI_BITKITCORE_FN_FUNC_CREATE_CJIT_ENTRY
 #define UNIFFI_FFIDEF_UNIFFI_BITKITCORE_FN_FUNC_CREATE_CJIT_ENTRY
 uint64_t uniffi_bitkitcore_fn_func_create_cjit_entry(uint64_t channel_size_sat, uint64_t invoice_sat, RustBuffer invoice_description, RustBuffer node_id, uint32_t channel_expiry_weeks, RustBuffer options
@@ -264,6 +269,11 @@ uint64_t uniffi_bitkitcore_fn_func_create_cjit_entry(uint64_t channel_size_sat, 
 #ifndef UNIFFI_FFIDEF_UNIFFI_BITKITCORE_FN_FUNC_CREATE_ORDER
 #define UNIFFI_FFIDEF_UNIFFI_BITKITCORE_FN_FUNC_CREATE_ORDER
 uint64_t uniffi_bitkitcore_fn_func_create_order(uint64_t lsp_balance_sat, uint32_t channel_expiry_weeks, RustBuffer options
+);
+#endif
+#ifndef UNIFFI_FFIDEF_UNIFFI_BITKITCORE_FN_FUNC_CREATE_WITHDRAW_CALLBACK_URL
+#define UNIFFI_FFIDEF_UNIFFI_BITKITCORE_FN_FUNC_CREATE_WITHDRAW_CALLBACK_URL
+RustBuffer uniffi_bitkitcore_fn_func_create_withdraw_callback_url(RustBuffer k1, RustBuffer callback, RustBuffer payment_request, RustCallStatus *_Nonnull out_status
 );
 #endif
 #ifndef UNIFFI_FFIDEF_UNIFFI_BITKITCORE_FN_FUNC_DECODE
@@ -365,6 +375,11 @@ RustBuffer uniffi_bitkitcore_fn_func_init_db(RustBuffer base_path, RustCallStatu
 #ifndef UNIFFI_FFIDEF_UNIFFI_BITKITCORE_FN_FUNC_INSERT_ACTIVITY
 #define UNIFFI_FFIDEF_UNIFFI_BITKITCORE_FN_FUNC_INSERT_ACTIVITY
 void uniffi_bitkitcore_fn_func_insert_activity(RustBuffer activity, RustCallStatus *_Nonnull out_status
+);
+#endif
+#ifndef UNIFFI_FFIDEF_UNIFFI_BITKITCORE_FN_FUNC_LNURL_AUTH
+#define UNIFFI_FFIDEF_UNIFFI_BITKITCORE_FN_FUNC_LNURL_AUTH
+uint64_t uniffi_bitkitcore_fn_func_lnurl_auth(RustBuffer domain, RustBuffer k1, RustBuffer callback, RustBuffer bip32_mnemonic, RustBuffer network, RustBuffer bip39_passphrase
 );
 #endif
 #ifndef UNIFFI_FFIDEF_UNIFFI_BITKITCORE_FN_FUNC_OPEN_CHANNEL
@@ -770,6 +785,12 @@ uint16_t uniffi_bitkitcore_checksum_func_add_tags(void
     
 );
 #endif
+#ifndef UNIFFI_FFIDEF_UNIFFI_BITKITCORE_CHECKSUM_FUNC_CREATE_CHANNEL_REQUEST_URL
+#define UNIFFI_FFIDEF_UNIFFI_BITKITCORE_CHECKSUM_FUNC_CREATE_CHANNEL_REQUEST_URL
+uint16_t uniffi_bitkitcore_checksum_func_create_channel_request_url(void
+    
+);
+#endif
 #ifndef UNIFFI_FFIDEF_UNIFFI_BITKITCORE_CHECKSUM_FUNC_CREATE_CJIT_ENTRY
 #define UNIFFI_FFIDEF_UNIFFI_BITKITCORE_CHECKSUM_FUNC_CREATE_CJIT_ENTRY
 uint16_t uniffi_bitkitcore_checksum_func_create_cjit_entry(void
@@ -779,6 +800,12 @@ uint16_t uniffi_bitkitcore_checksum_func_create_cjit_entry(void
 #ifndef UNIFFI_FFIDEF_UNIFFI_BITKITCORE_CHECKSUM_FUNC_CREATE_ORDER
 #define UNIFFI_FFIDEF_UNIFFI_BITKITCORE_CHECKSUM_FUNC_CREATE_ORDER
 uint16_t uniffi_bitkitcore_checksum_func_create_order(void
+    
+);
+#endif
+#ifndef UNIFFI_FFIDEF_UNIFFI_BITKITCORE_CHECKSUM_FUNC_CREATE_WITHDRAW_CALLBACK_URL
+#define UNIFFI_FFIDEF_UNIFFI_BITKITCORE_CHECKSUM_FUNC_CREATE_WITHDRAW_CALLBACK_URL
+uint16_t uniffi_bitkitcore_checksum_func_create_withdraw_callback_url(void
     
 );
 #endif
@@ -899,6 +926,12 @@ uint16_t uniffi_bitkitcore_checksum_func_init_db(void
 #ifndef UNIFFI_FFIDEF_UNIFFI_BITKITCORE_CHECKSUM_FUNC_INSERT_ACTIVITY
 #define UNIFFI_FFIDEF_UNIFFI_BITKITCORE_CHECKSUM_FUNC_INSERT_ACTIVITY
 uint16_t uniffi_bitkitcore_checksum_func_insert_activity(void
+    
+);
+#endif
+#ifndef UNIFFI_FFIDEF_UNIFFI_BITKITCORE_CHECKSUM_FUNC_LNURL_AUTH
+#define UNIFFI_FFIDEF_UNIFFI_BITKITCORE_CHECKSUM_FUNC_LNURL_AUTH
+uint16_t uniffi_bitkitcore_checksum_func_lnurl_auth(void
     
 );
 #endif

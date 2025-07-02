@@ -6,6 +6,9 @@
   - Support for BOLT-11, BIP21 & LNURL
 - LNURL Module
   - Lightning Address invoice generation
+  - LNURL-channel request URL creation
+  - LNURL-withdraw callback URL creation  
+  - LNURL-auth authentication with BIP32 key derivation
 - Onchain Module
   - Bitcoin address validation and type detection
   - BIP39 mnemonic phrase generation
@@ -36,7 +39,36 @@
 - LNURL:
   - [get_lnurl_invoice](src/modules/lnurl/README.md#usage-examples): Generates an invoice from a Lightning Address.
     ```rust
-      async fn get_lnurl_invoice(address: String, amount_satoshis: u64) -> Result<String, LnurlError>
+    async fn get_lnurl_invoice(address: String, amount_satoshis: u64) -> Result<String, LnurlError>
+    ```
+  - [create_channel_request_url](src/modules/lnurl/README.md#usage-examples): Creates callback URL for LNURL-channel requests.
+    ```rust
+    fn create_channel_request_url(
+        k1: String,
+        callback: String, 
+        local_node_id: String,
+        is_private: bool,
+        cancel: bool
+    ) -> Result<String, LnurlError>
+    ```
+  - [create_withdraw_callback_url](src/modules/lnurl/README.md#usage-examples): Creates callback URL for LNURL-withdraw requests.
+    ```rust
+    fn create_withdraw_callback_url(
+        k1: String,
+        callback: String,
+        payment_request: String
+    ) -> Result<String, LnurlError>
+    ```
+  - [lnurl_auth](src/modules/lnurl/README.md#usage-examples): Performs LNURL authentication with BIP32 key derivation.
+    ```rust
+    async fn lnurl_auth(
+        domain: String,
+        k1: String,
+        callback: String,
+        bip32_mnemonic: String,
+        network: Option<Network>,
+        bip39_passphrase: Option<String>
+    ) -> Result<String, LnurlError>
     ```
 - Onchain:
   - [validate_bitcoin_address](src/modules/onchain/README.md#usage-examples): Validates a Bitcoin address and returns its type and network.

@@ -789,6 +789,12 @@ internal interface UniffiForeignFutureCompleteVoid : com.sun.jna.Callback {
 
 
 
+
+
+
+
+
+
 // A JNA Library to expose the extern-C FFI definitions.
 // This is an implementation detail which will be called internally by the public API.
 
@@ -806,10 +812,14 @@ internal interface UniffiLib : Library {
 
     fun uniffi_bitkitcore_fn_func_add_tags(`activityId`: RustBuffer.ByValue,`tags`: RustBuffer.ByValue,uniffi_out_err: UniffiRustCallStatus, 
     ): Unit
+    fun uniffi_bitkitcore_fn_func_create_channel_request_url(`k1`: RustBuffer.ByValue,`callback`: RustBuffer.ByValue,`localNodeId`: RustBuffer.ByValue,`isPrivate`: Byte,`cancel`: Byte,uniffi_out_err: UniffiRustCallStatus, 
+    ): RustBuffer.ByValue
     fun uniffi_bitkitcore_fn_func_create_cjit_entry(`channelSizeSat`: Long,`invoiceSat`: Long,`invoiceDescription`: RustBuffer.ByValue,`nodeId`: RustBuffer.ByValue,`channelExpiryWeeks`: Int,`options`: RustBuffer.ByValue,
     ): Long
     fun uniffi_bitkitcore_fn_func_create_order(`lspBalanceSat`: Long,`channelExpiryWeeks`: Int,`options`: RustBuffer.ByValue,
     ): Long
+    fun uniffi_bitkitcore_fn_func_create_withdraw_callback_url(`k1`: RustBuffer.ByValue,`callback`: RustBuffer.ByValue,`paymentRequest`: RustBuffer.ByValue,uniffi_out_err: UniffiRustCallStatus, 
+    ): RustBuffer.ByValue
     fun uniffi_bitkitcore_fn_func_decode(`invoice`: RustBuffer.ByValue,
     ): Long
     fun uniffi_bitkitcore_fn_func_delete_activity_by_id(`activityId`: RustBuffer.ByValue,uniffi_out_err: UniffiRustCallStatus, 
@@ -850,6 +860,8 @@ internal interface UniffiLib : Library {
     ): RustBuffer.ByValue
     fun uniffi_bitkitcore_fn_func_insert_activity(`activity`: RustBuffer.ByValue,uniffi_out_err: UniffiRustCallStatus, 
     ): Unit
+    fun uniffi_bitkitcore_fn_func_lnurl_auth(`domain`: RustBuffer.ByValue,`k1`: RustBuffer.ByValue,`callback`: RustBuffer.ByValue,`bip32Mnemonic`: RustBuffer.ByValue,`network`: RustBuffer.ByValue,`bip39Passphrase`: RustBuffer.ByValue,
+    ): Long
     fun uniffi_bitkitcore_fn_func_open_channel(`orderId`: RustBuffer.ByValue,`connectionString`: RustBuffer.ByValue,
     ): Long
     fun uniffi_bitkitcore_fn_func_refresh_active_cjit_entries(
@@ -1010,9 +1022,13 @@ internal interface UniffiLib : Library {
     ): Unit
     fun uniffi_bitkitcore_checksum_func_add_tags(
     ): Short
+    fun uniffi_bitkitcore_checksum_func_create_channel_request_url(
+    ): Short
     fun uniffi_bitkitcore_checksum_func_create_cjit_entry(
     ): Short
     fun uniffi_bitkitcore_checksum_func_create_order(
+    ): Short
+    fun uniffi_bitkitcore_checksum_func_create_withdraw_callback_url(
     ): Short
     fun uniffi_bitkitcore_checksum_func_decode(
     ): Short
@@ -1053,6 +1069,8 @@ internal interface UniffiLib : Library {
     fun uniffi_bitkitcore_checksum_func_init_db(
     ): Short
     fun uniffi_bitkitcore_checksum_func_insert_activity(
+    ): Short
+    fun uniffi_bitkitcore_checksum_func_lnurl_auth(
     ): Short
     fun uniffi_bitkitcore_checksum_func_open_channel(
     ): Short
@@ -1120,10 +1138,16 @@ private fun uniffiCheckApiChecksums(lib: UniffiLib) {
     if (lib.uniffi_bitkitcore_checksum_func_add_tags() != 63739.toShort()) {
         throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
     }
+    if (lib.uniffi_bitkitcore_checksum_func_create_channel_request_url() != 9305.toShort()) {
+        throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
+    }
     if (lib.uniffi_bitkitcore_checksum_func_create_cjit_entry() != 51504.toShort()) {
         throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
     }
     if (lib.uniffi_bitkitcore_checksum_func_create_order() != 33461.toShort()) {
+        throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
+    }
+    if (lib.uniffi_bitkitcore_checksum_func_create_withdraw_callback_url() != 39350.toShort()) {
         throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
     }
     if (lib.uniffi_bitkitcore_checksum_func_decode() != 28437.toShort()) {
@@ -1184,6 +1208,9 @@ private fun uniffiCheckApiChecksums(lib: UniffiLib) {
         throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
     }
     if (lib.uniffi_bitkitcore_checksum_func_insert_activity() != 1510.toShort()) {
+        throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
+    }
+    if (lib.uniffi_bitkitcore_checksum_func_lnurl_auth() != 58593.toShort()) {
         throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
     }
     if (lib.uniffi_bitkitcore_checksum_func_open_channel() != 21402.toShort()) {
@@ -6717,6 +6744,12 @@ sealed class LnurlException: Exception() {
             get() = "errorDetails=${ `errorDetails` }"
     }
     
+    class AuthenticationFailed(
+        ) : LnurlException() {
+        override val message
+            get() = ""
+    }
+    
 
     companion object ErrorHandler : UniffiRustCallStatusErrorHandler<LnurlException> {
         override fun lift(error_buf: RustBuffer.ByValue): LnurlException = FfiConverterTypeLnurlError.lift(error_buf)
@@ -6742,6 +6775,7 @@ public object FfiConverterTypeLnurlError : FfiConverterRustBuffer<LnurlException
             6 -> LnurlException.InvoiceCreationFailed(
                 FfiConverterString.read(buf),
                 )
+            7 -> LnurlException.AuthenticationFailed()
             else -> throw RuntimeException("invalid error enum value, something is very wrong!!")
         }
     }
@@ -6776,6 +6810,10 @@ public object FfiConverterTypeLnurlError : FfiConverterRustBuffer<LnurlException
                 4UL
                 + FfiConverterString.allocationSize(value.`errorDetails`)
             )
+            is LnurlException.AuthenticationFailed -> (
+                // Add the size for the Int that specifies the variant plus the size needed for all fields
+                4UL
+            )
         }
     }
 
@@ -6807,6 +6845,10 @@ public object FfiConverterTypeLnurlError : FfiConverterRustBuffer<LnurlException
             is LnurlException.InvoiceCreationFailed -> {
                 buf.putInt(6)
                 FfiConverterString.write(value.`errorDetails`, buf)
+                Unit
+            }
+            is LnurlException.AuthenticationFailed -> {
+                buf.putInt(7)
                 Unit
             }
         }.let { /* this makes the `when` an expression, which ensures it is exhaustive */ }
@@ -9795,6 +9837,16 @@ public object FfiConverterMapStringString: FfiConverterRustBuffer<Map<kotlin.Str
     
     
 
+    @Throws(LnurlException::class) fun `createChannelRequestUrl`(`k1`: kotlin.String, `callback`: kotlin.String, `localNodeId`: kotlin.String, `isPrivate`: kotlin.Boolean, `cancel`: kotlin.Boolean): kotlin.String {
+            return FfiConverterString.lift(
+    uniffiRustCallWithError(LnurlException) { _status ->
+    UniffiLib.INSTANCE.uniffi_bitkitcore_fn_func_create_channel_request_url(
+        FfiConverterString.lower(`k1`),FfiConverterString.lower(`callback`),FfiConverterString.lower(`localNodeId`),FfiConverterBoolean.lower(`isPrivate`),FfiConverterBoolean.lower(`cancel`),_status)
+}
+    )
+    }
+    
+
     @Throws(BlocktankException::class)
     @Suppress("ASSIGNED_BUT_NEVER_ACCESSED_VARIABLE")
      suspend fun `createCjitEntry`(`channelSizeSat`: kotlin.ULong, `invoiceSat`: kotlin.ULong, `invoiceDescription`: kotlin.String, `nodeId`: kotlin.String, `channelExpiryWeeks`: kotlin.UInt, `options`: CreateCjitOptions?) : IcJitEntry {
@@ -9824,6 +9876,16 @@ public object FfiConverterMapStringString: FfiConverterRustBuffer<Map<kotlin.Str
         BlocktankException.ErrorHandler,
     )
     }
+
+    @Throws(LnurlException::class) fun `createWithdrawCallbackUrl`(`k1`: kotlin.String, `callback`: kotlin.String, `paymentRequest`: kotlin.String): kotlin.String {
+            return FfiConverterString.lift(
+    uniffiRustCallWithError(LnurlException) { _status ->
+    UniffiLib.INSTANCE.uniffi_bitkitcore_fn_func_create_withdraw_callback_url(
+        FfiConverterString.lower(`k1`),FfiConverterString.lower(`callback`),FfiConverterString.lower(`paymentRequest`),_status)
+}
+    )
+    }
+    
 
     @Throws(DecodingException::class)
     @Suppress("ASSIGNED_BUT_NEVER_ACCESSED_VARIABLE")
@@ -10063,6 +10125,21 @@ public object FfiConverterMapStringString: FfiConverterRustBuffer<Map<kotlin.Str
 }
     
     
+
+    @Throws(LnurlException::class)
+    @Suppress("ASSIGNED_BUT_NEVER_ACCESSED_VARIABLE")
+     suspend fun `lnurlAuth`(`domain`: kotlin.String, `k1`: kotlin.String, `callback`: kotlin.String, `bip32Mnemonic`: kotlin.String, `network`: Network?, `bip39Passphrase`: kotlin.String?) : kotlin.String {
+        return uniffiRustCallAsync(
+        UniffiLib.INSTANCE.uniffi_bitkitcore_fn_func_lnurl_auth(FfiConverterString.lower(`domain`),FfiConverterString.lower(`k1`),FfiConverterString.lower(`callback`),FfiConverterString.lower(`bip32Mnemonic`),FfiConverterOptionalTypeNetwork.lower(`network`),FfiConverterOptionalString.lower(`bip39Passphrase`),),
+        { future, callback, continuation -> UniffiLib.INSTANCE.ffi_bitkitcore_rust_future_poll_rust_buffer(future, callback, continuation) },
+        { future, continuation -> UniffiLib.INSTANCE.ffi_bitkitcore_rust_future_complete_rust_buffer(future, continuation) },
+        { future -> UniffiLib.INSTANCE.ffi_bitkitcore_rust_future_free_rust_buffer(future) },
+        // lift function
+        { FfiConverterString.lift(it) },
+        // Error FFI converter
+        LnurlException.ErrorHandler,
+    )
+    }
 
     @Throws(BlocktankException::class)
     @Suppress("ASSIGNED_BUT_NEVER_ACCESSED_VARIABLE")
