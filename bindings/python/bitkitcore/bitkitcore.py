@@ -9208,37 +9208,24 @@ class Scanner:
                 return False
             return True
     
-    class TREASURE_HUNT:
-        chest_id: "str"
+    class GIFT:
+        code: "str"
+        amount: "int"
 
         @typing.no_type_check
-        def __init__(self,chest_id: "str"):
-            self.chest_id = chest_id
+        def __init__(self,code: "str", amount: "int"):
+            self.code = code
+            self.amount = amount
 
         def __str__(self):
-            return "Scanner.TREASURE_HUNT(chest_id={})".format(self.chest_id)
+            return "Scanner.GIFT(code={}, amount={})".format(self.code, self.amount)
 
         def __eq__(self, other):
-            if not other.is_treasure_hunt():
+            if not other.is_gift():
                 return False
-            if self.chest_id != other.chest_id:
+            if self.code != other.code:
                 return False
-            return True
-    
-    class ORANGE_TICKET:
-        ticket_id: "str"
-
-        @typing.no_type_check
-        def __init__(self,ticket_id: "str"):
-            self.ticket_id = ticket_id
-
-        def __str__(self):
-            return "Scanner.ORANGE_TICKET(ticket_id={})".format(self.ticket_id)
-
-        def __eq__(self, other):
-            if not other.is_orange_ticket():
-                return False
-            if self.ticket_id != other.ticket_id:
+            if self.amount != other.amount:
                 return False
             return True
     
@@ -9264,10 +9251,8 @@ class Scanner:
         return isinstance(self, Scanner.LNURL_PAY)
     def is_node_id(self) -> bool:
         return isinstance(self, Scanner.NODE_ID)
-    def is_treasure_hunt(self) -> bool:
-        return isinstance(self, Scanner.TREASURE_HUNT)
-    def is_orange_ticket(self) -> bool:
-        return isinstance(self, Scanner.ORANGE_TICKET)
+    def is_gift(self) -> bool:
+        return isinstance(self, Scanner.GIFT)
     
 
 # Now, a little trick - we make each nested variant class be a subclass of the main
@@ -9282,8 +9267,7 @@ Scanner.LNURL_WITHDRAW = type("Scanner.LNURL_WITHDRAW", (Scanner.LNURL_WITHDRAW,
 Scanner.LNURL_ADDRESS = type("Scanner.LNURL_ADDRESS", (Scanner.LNURL_ADDRESS, Scanner,), {})  # type: ignore
 Scanner.LNURL_PAY = type("Scanner.LNURL_PAY", (Scanner.LNURL_PAY, Scanner,), {})  # type: ignore
 Scanner.NODE_ID = type("Scanner.NODE_ID", (Scanner.NODE_ID, Scanner,), {})  # type: ignore
-Scanner.TREASURE_HUNT = type("Scanner.TREASURE_HUNT", (Scanner.TREASURE_HUNT, Scanner,), {})  # type: ignore
-Scanner.ORANGE_TICKET = type("Scanner.ORANGE_TICKET", (Scanner.ORANGE_TICKET, Scanner,), {})  # type: ignore
+Scanner.GIFT = type("Scanner.GIFT", (Scanner.GIFT, Scanner,), {})  # type: ignore
 
 
 
@@ -9330,12 +9314,9 @@ class _UniffiConverterTypeScanner(_UniffiConverterRustBuffer):
                 _UniffiConverterTypeNetworkType.read(buf),
             )
         if variant == 10:
-            return Scanner.TREASURE_HUNT(
+            return Scanner.GIFT(
                 _UniffiConverterString.read(buf),
-            )
-        if variant == 11:
-            return Scanner.ORANGE_TICKET(
-                _UniffiConverterString.read(buf),
+                _UniffiConverterUInt64.read(buf),
             )
         raise InternalError("Raw enum value doesn't match any cases")
 
@@ -9369,11 +9350,9 @@ class _UniffiConverterTypeScanner(_UniffiConverterRustBuffer):
             _UniffiConverterString.check_lower(value.url)
             _UniffiConverterTypeNetworkType.check_lower(value.network)
             return
-        if value.is_treasure_hunt():
-            _UniffiConverterString.check_lower(value.chest_id)
-            return
-        if value.is_orange_ticket():
-            _UniffiConverterString.check_lower(value.ticket_id)
+        if value.is_gift():
+            _UniffiConverterString.check_lower(value.code)
+            _UniffiConverterUInt64.check_lower(value.amount)
             return
         raise ValueError(value)
 
@@ -9407,12 +9386,10 @@ class _UniffiConverterTypeScanner(_UniffiConverterRustBuffer):
             buf.write_i32(9)
             _UniffiConverterString.write(value.url, buf)
             _UniffiConverterTypeNetworkType.write(value.network, buf)
-        if value.is_treasure_hunt():
+        if value.is_gift():
             buf.write_i32(10)
-            _UniffiConverterString.write(value.chest_id, buf)
-        if value.is_orange_ticket():
-            buf.write_i32(11)
-            _UniffiConverterString.write(value.ticket_id, buf)
+            _UniffiConverterString.write(value.code, buf)
+            _UniffiConverterUInt64.write(value.amount, buf)
 
 
 

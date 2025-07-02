@@ -7064,13 +7064,9 @@ sealed class Scanner {
         companion object
     }
     
-    data class TreasureHunt(
-        val `chestId`: kotlin.String) : Scanner() {
-        companion object
-    }
-    
-    data class OrangeTicket(
-        val `ticketId`: kotlin.String) : Scanner() {
+    data class Gift(
+        val `code`: kotlin.String, 
+        val `amount`: kotlin.ULong) : Scanner() {
         companion object
     }
     
@@ -7110,11 +7106,9 @@ public object FfiConverterTypeScanner : FfiConverterRustBuffer<Scanner>{
                 FfiConverterString.read(buf),
                 FfiConverterTypeNetworkType.read(buf),
                 )
-            10 -> Scanner.TreasureHunt(
+            10 -> Scanner.Gift(
                 FfiConverterString.read(buf),
-                )
-            11 -> Scanner.OrangeTicket(
-                FfiConverterString.read(buf),
+                FfiConverterULong.read(buf),
                 )
             else -> throw RuntimeException("invalid enum value, something is very wrong!!")
         }
@@ -7185,18 +7179,12 @@ public object FfiConverterTypeScanner : FfiConverterRustBuffer<Scanner>{
                 + FfiConverterTypeNetworkType.allocationSize(value.`network`)
             )
         }
-        is Scanner.TreasureHunt -> {
+        is Scanner.Gift -> {
             // Add the size for the Int that specifies the variant plus the size needed for all fields
             (
                 4UL
-                + FfiConverterString.allocationSize(value.`chestId`)
-            )
-        }
-        is Scanner.OrangeTicket -> {
-            // Add the size for the Int that specifies the variant plus the size needed for all fields
-            (
-                4UL
-                + FfiConverterString.allocationSize(value.`ticketId`)
+                + FfiConverterString.allocationSize(value.`code`)
+                + FfiConverterULong.allocationSize(value.`amount`)
             )
         }
     }
@@ -7249,14 +7237,10 @@ public object FfiConverterTypeScanner : FfiConverterRustBuffer<Scanner>{
                 FfiConverterTypeNetworkType.write(value.`network`, buf)
                 Unit
             }
-            is Scanner.TreasureHunt -> {
+            is Scanner.Gift -> {
                 buf.putInt(10)
-                FfiConverterString.write(value.`chestId`, buf)
-                Unit
-            }
-            is Scanner.OrangeTicket -> {
-                buf.putInt(11)
-                FfiConverterString.write(value.`ticketId`, buf)
+                FfiConverterString.write(value.`code`, buf)
+                FfiConverterULong.write(value.`amount`, buf)
                 Unit
             }
         }.let { /* this makes the `when` an expression, which ensures it is exhaustive */ }

@@ -9484,9 +9484,7 @@ public enum Scanner {
     )
     case nodeId(url: String, network: NetworkType
     )
-    case treasureHunt(chestId: String
-    )
-    case orangeTicket(ticketId: String
+    case gift(code: String, amount: UInt64
     )
 }
 
@@ -9525,10 +9523,7 @@ public struct FfiConverterTypeScanner: FfiConverterRustBuffer {
         case 9: return .nodeId(url: try FfiConverterString.read(from: &buf), network: try FfiConverterTypeNetworkType.read(from: &buf)
         )
         
-        case 10: return .treasureHunt(chestId: try FfiConverterString.read(from: &buf)
-        )
-        
-        case 11: return .orangeTicket(ticketId: try FfiConverterString.read(from: &buf)
+        case 10: return .gift(code: try FfiConverterString.read(from: &buf), amount: try FfiConverterUInt64.read(from: &buf)
         )
         
         default: throw UniffiInternalError.unexpectedEnumCase
@@ -9585,14 +9580,10 @@ public struct FfiConverterTypeScanner: FfiConverterRustBuffer {
             FfiConverterTypeNetworkType.write(network, into: &buf)
             
         
-        case let .treasureHunt(chestId):
+        case let .gift(code,amount):
             writeInt(&buf, Int32(10))
-            FfiConverterString.write(chestId, into: &buf)
-            
-        
-        case let .orangeTicket(ticketId):
-            writeInt(&buf, Int32(11))
-            FfiConverterString.write(ticketId, into: &buf)
+            FfiConverterString.write(code, into: &buf)
+            FfiConverterUInt64.write(amount, into: &buf)
             
         }
     }
