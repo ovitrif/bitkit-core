@@ -23,6 +23,7 @@
   - Create and manage Lightning Service Provider (LSP) orders
   - Channel opening and management
   - Just-in-time channel creation
+  - Gift code payments and redemption
 - Trezor Module
   - Integration with Trezor hardware wallets through deep linking
   - Get device features and capabilities
