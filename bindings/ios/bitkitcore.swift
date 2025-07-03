@@ -3819,6 +3819,168 @@ public func FfiConverterTypeIDiscount_lower(_ value: IDiscount) -> RustBuffer {
 }
 
 
+public struct IGift {
+    public var id: String
+    public var nodeId: String
+    public var orderId: String?
+    public var order: IBtOrder?
+    public var bolt11PaymentId: String?
+    public var bolt11Payment: IBtPayment?
+    public var appliedGiftCodeId: String
+    public var appliedGiftCode: IGiftCode?
+
+    // Default memberwise initializers are never public by default, so we
+    // declare one manually.
+    public init(id: String, nodeId: String, orderId: String?, order: IBtOrder?, bolt11PaymentId: String?, bolt11Payment: IBtPayment?, appliedGiftCodeId: String, appliedGiftCode: IGiftCode?) {
+        self.id = id
+        self.nodeId = nodeId
+        self.orderId = orderId
+        self.order = order
+        self.bolt11PaymentId = bolt11PaymentId
+        self.bolt11Payment = bolt11Payment
+        self.appliedGiftCodeId = appliedGiftCodeId
+        self.appliedGiftCode = appliedGiftCode
+    }
+}
+
+
+
+extension IGift: Equatable, Hashable {
+    public static func ==(lhs: IGift, rhs: IGift) -> Bool {
+        if lhs.id != rhs.id {
+            return false
+        }
+        if lhs.nodeId != rhs.nodeId {
+            return false
+        }
+        if lhs.orderId != rhs.orderId {
+            return false
+        }
+        if lhs.order != rhs.order {
+            return false
+        }
+        if lhs.bolt11PaymentId != rhs.bolt11PaymentId {
+            return false
+        }
+        if lhs.bolt11Payment != rhs.bolt11Payment {
+            return false
+        }
+        if lhs.appliedGiftCodeId != rhs.appliedGiftCodeId {
+            return false
+        }
+        if lhs.appliedGiftCode != rhs.appliedGiftCode {
+            return false
+        }
+        return true
+    }
+
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(id)
+        hasher.combine(nodeId)
+        hasher.combine(orderId)
+        hasher.combine(order)
+        hasher.combine(bolt11PaymentId)
+        hasher.combine(bolt11Payment)
+        hasher.combine(appliedGiftCodeId)
+        hasher.combine(appliedGiftCode)
+    }
+}
+
+
+public struct FfiConverterTypeIGift: FfiConverterRustBuffer {
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> IGift {
+        return
+            try IGift(
+                id: FfiConverterString.read(from: &buf), 
+                nodeId: FfiConverterString.read(from: &buf), 
+                orderId: FfiConverterOptionString.read(from: &buf), 
+                order: FfiConverterOptionTypeIBtOrder.read(from: &buf), 
+                bolt11PaymentId: FfiConverterOptionString.read(from: &buf), 
+                bolt11Payment: FfiConverterOptionTypeIBtPayment.read(from: &buf), 
+                appliedGiftCodeId: FfiConverterString.read(from: &buf), 
+                appliedGiftCode: FfiConverterOptionTypeIGiftCode.read(from: &buf)
+        )
+    }
+
+    public static func write(_ value: IGift, into buf: inout [UInt8]) {
+        FfiConverterString.write(value.id, into: &buf)
+        FfiConverterString.write(value.nodeId, into: &buf)
+        FfiConverterOptionString.write(value.orderId, into: &buf)
+        FfiConverterOptionTypeIBtOrder.write(value.order, into: &buf)
+        FfiConverterOptionString.write(value.bolt11PaymentId, into: &buf)
+        FfiConverterOptionTypeIBtPayment.write(value.bolt11Payment, into: &buf)
+        FfiConverterString.write(value.appliedGiftCodeId, into: &buf)
+        FfiConverterOptionTypeIGiftCode.write(value.appliedGiftCode, into: &buf)
+    }
+}
+
+
+public func FfiConverterTypeIGift_lift(_ buf: RustBuffer) throws -> IGift {
+    return try FfiConverterTypeIGift.lift(buf)
+}
+
+public func FfiConverterTypeIGift_lower(_ value: IGift) -> RustBuffer {
+    return FfiConverterTypeIGift.lower(value)
+}
+
+
+public struct IGiftCode {
+    public var id: String
+    public var code: String
+
+    // Default memberwise initializers are never public by default, so we
+    // declare one manually.
+    public init(id: String, code: String) {
+        self.id = id
+        self.code = code
+    }
+}
+
+
+
+extension IGiftCode: Equatable, Hashable {
+    public static func ==(lhs: IGiftCode, rhs: IGiftCode) -> Bool {
+        if lhs.id != rhs.id {
+            return false
+        }
+        if lhs.code != rhs.code {
+            return false
+        }
+        return true
+    }
+
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(id)
+        hasher.combine(code)
+    }
+}
+
+
+public struct FfiConverterTypeIGiftCode: FfiConverterRustBuffer {
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> IGiftCode {
+        return
+            try IGiftCode(
+                id: FfiConverterString.read(from: &buf), 
+                code: FfiConverterString.read(from: &buf)
+        )
+    }
+
+    public static func write(_ value: IGiftCode, into buf: inout [UInt8]) {
+        FfiConverterString.write(value.id, into: &buf)
+        FfiConverterString.write(value.code, into: &buf)
+    }
+}
+
+
+public func FfiConverterTypeIGiftCode_lift(_ buf: RustBuffer) throws -> IGiftCode {
+    return try FfiConverterTypeIGiftCode.lift(buf)
+}
+
+public func FfiConverterTypeIGiftCode_lower(_ value: IGiftCode) -> RustBuffer {
+    return FfiConverterTypeIGiftCode.lower(value)
+}
+
+
 public struct ILspNode {
     public var alias: String
     public var pubkey: String
@@ -10599,6 +10761,48 @@ fileprivate struct FfiConverterOptionTypeIBtInfo: FfiConverterRustBuffer {
     }
 }
 
+fileprivate struct FfiConverterOptionTypeIBtOrder: FfiConverterRustBuffer {
+    typealias SwiftType = IBtOrder?
+
+    public static func write(_ value: SwiftType, into buf: inout [UInt8]) {
+        guard let value = value else {
+            writeInt(&buf, Int8(0))
+            return
+        }
+        writeInt(&buf, Int8(1))
+        FfiConverterTypeIBtOrder.write(value, into: &buf)
+    }
+
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> SwiftType {
+        switch try readInt(&buf) as Int8 {
+        case 0: return nil
+        case 1: return try FfiConverterTypeIBtOrder.read(from: &buf)
+        default: throw UniffiInternalError.unexpectedOptionalTag
+        }
+    }
+}
+
+fileprivate struct FfiConverterOptionTypeIBtPayment: FfiConverterRustBuffer {
+    typealias SwiftType = IBtPayment?
+
+    public static func write(_ value: SwiftType, into buf: inout [UInt8]) {
+        guard let value = value else {
+            writeInt(&buf, Int8(0))
+            return
+        }
+        writeInt(&buf, Int8(1))
+        FfiConverterTypeIBtPayment.write(value, into: &buf)
+    }
+
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> SwiftType {
+        switch try readInt(&buf) as Int8 {
+        case 0: return nil
+        case 1: return try FfiConverterTypeIBtPayment.read(from: &buf)
+        default: throw UniffiInternalError.unexpectedOptionalTag
+        }
+    }
+}
+
 fileprivate struct FfiConverterOptionTypeIDiscount: FfiConverterRustBuffer {
     typealias SwiftType = IDiscount?
 
@@ -10615,6 +10819,27 @@ fileprivate struct FfiConverterOptionTypeIDiscount: FfiConverterRustBuffer {
         switch try readInt(&buf) as Int8 {
         case 0: return nil
         case 1: return try FfiConverterTypeIDiscount.read(from: &buf)
+        default: throw UniffiInternalError.unexpectedOptionalTag
+        }
+    }
+}
+
+fileprivate struct FfiConverterOptionTypeIGiftCode: FfiConverterRustBuffer {
+    typealias SwiftType = IGiftCode?
+
+    public static func write(_ value: SwiftType, into buf: inout [UInt8]) {
+        guard let value = value else {
+            writeInt(&buf, Int8(0))
+            return
+        }
+        writeInt(&buf, Int8(1))
+        FfiConverterTypeIGiftCode.write(value, into: &buf)
+    }
+
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> SwiftType {
+        switch try readInt(&buf) as Int8 {
+        case 0: return nil
+        case 1: return try FfiConverterTypeIGiftCode.read(from: &buf)
         default: throw UniffiInternalError.unexpectedOptionalTag
         }
     }
@@ -12062,6 +12287,20 @@ public func getCjitEntries(entryIds: [String]?, filter: CJitStateEnum?, refresh:
             errorHandler: FfiConverterTypeBlocktankError.lift
         )
 }
+public func getGift(giftId: String)async throws  -> IGift {
+    return
+        try  await uniffiRustCallAsync(
+            rustFutureFunc: {
+                uniffi_bitkitcore_fn_func_get_gift(FfiConverterString.lower(giftId)
+                )
+            },
+            pollFunc: ffi_bitkitcore_rust_future_poll_rust_buffer,
+            completeFunc: ffi_bitkitcore_rust_future_complete_rust_buffer,
+            freeFunc: ffi_bitkitcore_rust_future_free_rust_buffer,
+            liftFunc: FfiConverterTypeIGift.lift,
+            errorHandler: FfiConverterTypeBlocktankError.lift
+        )
+}
 public func getInfo(refresh: Bool?)async throws  -> IBtInfo? {
     return
         try  await uniffiRustCallAsync(
@@ -12118,12 +12357,54 @@ public func getOrders(orderIds: [String]?, filter: BtOrderState2?, refresh: Bool
             errorHandler: FfiConverterTypeBlocktankError.lift
         )
 }
+public func getPayment(paymentId: String)async throws  -> IBtBolt11Invoice {
+    return
+        try  await uniffiRustCallAsync(
+            rustFutureFunc: {
+                uniffi_bitkitcore_fn_func_get_payment(FfiConverterString.lower(paymentId)
+                )
+            },
+            pollFunc: ffi_bitkitcore_rust_future_poll_rust_buffer,
+            completeFunc: ffi_bitkitcore_rust_future_complete_rust_buffer,
+            freeFunc: ffi_bitkitcore_rust_future_free_rust_buffer,
+            liftFunc: FfiConverterTypeIBtBolt11Invoice.lift,
+            errorHandler: FfiConverterTypeBlocktankError.lift
+        )
+}
 public func getTags(activityId: String)throws  -> [String] {
     return try  FfiConverterSequenceString.lift(try rustCallWithError(FfiConverterTypeActivityError.lift) {
     uniffi_bitkitcore_fn_func_get_tags(
         FfiConverterString.lower(activityId),$0
     )
 })
+}
+public func giftOrder(clientNodeId: String, code: String)async throws  -> IGift {
+    return
+        try  await uniffiRustCallAsync(
+            rustFutureFunc: {
+                uniffi_bitkitcore_fn_func_gift_order(FfiConverterString.lower(clientNodeId),FfiConverterString.lower(code)
+                )
+            },
+            pollFunc: ffi_bitkitcore_rust_future_poll_rust_buffer,
+            completeFunc: ffi_bitkitcore_rust_future_complete_rust_buffer,
+            freeFunc: ffi_bitkitcore_rust_future_free_rust_buffer,
+            liftFunc: FfiConverterTypeIGift.lift,
+            errorHandler: FfiConverterTypeBlocktankError.lift
+        )
+}
+public func giftPay(invoice: String)async throws  -> IGift {
+    return
+        try  await uniffiRustCallAsync(
+            rustFutureFunc: {
+                uniffi_bitkitcore_fn_func_gift_pay(FfiConverterString.lower(invoice)
+                )
+            },
+            pollFunc: ffi_bitkitcore_rust_future_poll_rust_buffer,
+            completeFunc: ffi_bitkitcore_rust_future_complete_rust_buffer,
+            freeFunc: ffi_bitkitcore_rust_future_free_rust_buffer,
+            liftFunc: FfiConverterTypeIGift.lift,
+            errorHandler: FfiConverterTypeBlocktankError.lift
+        )
 }
 public func initDb(basePath: String)throws  -> String {
     return try  FfiConverterString.lift(try rustCallWithError(FfiConverterTypeDbError.lift) {
@@ -12543,6 +12824,9 @@ private var initializationResult: InitializationResult {
     if (uniffi_bitkitcore_checksum_func_get_cjit_entries() != 29342) {
         return InitializationResult.apiChecksumMismatch
     }
+    if (uniffi_bitkitcore_checksum_func_get_gift() != 386) {
+        return InitializationResult.apiChecksumMismatch
+    }
     if (uniffi_bitkitcore_checksum_func_get_info() != 43607) {
         return InitializationResult.apiChecksumMismatch
     }
@@ -12555,7 +12839,16 @@ private var initializationResult: InitializationResult {
     if (uniffi_bitkitcore_checksum_func_get_orders() != 47460) {
         return InitializationResult.apiChecksumMismatch
     }
+    if (uniffi_bitkitcore_checksum_func_get_payment() != 29170) {
+        return InitializationResult.apiChecksumMismatch
+    }
     if (uniffi_bitkitcore_checksum_func_get_tags() != 11308) {
+        return InitializationResult.apiChecksumMismatch
+    }
+    if (uniffi_bitkitcore_checksum_func_gift_order() != 22040) {
+        return InitializationResult.apiChecksumMismatch
+    }
+    if (uniffi_bitkitcore_checksum_func_gift_pay() != 22142) {
         return InitializationResult.apiChecksumMismatch
     }
     if (uniffi_bitkitcore_checksum_func_init_db() != 9643) {

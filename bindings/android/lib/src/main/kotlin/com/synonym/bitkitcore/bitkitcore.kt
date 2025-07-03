@@ -795,6 +795,14 @@ internal interface UniffiForeignFutureCompleteVoid : com.sun.jna.Callback {
 
 
 
+
+
+
+
+
+
+
+
 // A JNA Library to expose the extern-C FFI definitions.
 // This is an implementation detail which will be called internally by the public API.
 
@@ -846,6 +854,8 @@ internal interface UniffiLib : Library {
     ): RustBuffer.ByValue
     fun uniffi_bitkitcore_fn_func_get_cjit_entries(`entryIds`: RustBuffer.ByValue,`filter`: RustBuffer.ByValue,`refresh`: Byte,
     ): Long
+    fun uniffi_bitkitcore_fn_func_get_gift(`giftId`: RustBuffer.ByValue,
+    ): Long
     fun uniffi_bitkitcore_fn_func_get_info(`refresh`: RustBuffer.ByValue,
     ): Long
     fun uniffi_bitkitcore_fn_func_get_lnurl_invoice(`address`: RustBuffer.ByValue,`amountSatoshis`: Long,
@@ -854,8 +864,14 @@ internal interface UniffiLib : Library {
     ): Long
     fun uniffi_bitkitcore_fn_func_get_orders(`orderIds`: RustBuffer.ByValue,`filter`: RustBuffer.ByValue,`refresh`: Byte,
     ): Long
+    fun uniffi_bitkitcore_fn_func_get_payment(`paymentId`: RustBuffer.ByValue,
+    ): Long
     fun uniffi_bitkitcore_fn_func_get_tags(`activityId`: RustBuffer.ByValue,uniffi_out_err: UniffiRustCallStatus, 
     ): RustBuffer.ByValue
+    fun uniffi_bitkitcore_fn_func_gift_order(`clientNodeId`: RustBuffer.ByValue,`code`: RustBuffer.ByValue,
+    ): Long
+    fun uniffi_bitkitcore_fn_func_gift_pay(`invoice`: RustBuffer.ByValue,
+    ): Long
     fun uniffi_bitkitcore_fn_func_init_db(`basePath`: RustBuffer.ByValue,uniffi_out_err: UniffiRustCallStatus, 
     ): RustBuffer.ByValue
     fun uniffi_bitkitcore_fn_func_insert_activity(`activity`: RustBuffer.ByValue,uniffi_out_err: UniffiRustCallStatus, 
@@ -1056,6 +1072,8 @@ internal interface UniffiLib : Library {
     ): Short
     fun uniffi_bitkitcore_checksum_func_get_cjit_entries(
     ): Short
+    fun uniffi_bitkitcore_checksum_func_get_gift(
+    ): Short
     fun uniffi_bitkitcore_checksum_func_get_info(
     ): Short
     fun uniffi_bitkitcore_checksum_func_get_lnurl_invoice(
@@ -1064,7 +1082,13 @@ internal interface UniffiLib : Library {
     ): Short
     fun uniffi_bitkitcore_checksum_func_get_orders(
     ): Short
+    fun uniffi_bitkitcore_checksum_func_get_payment(
+    ): Short
     fun uniffi_bitkitcore_checksum_func_get_tags(
+    ): Short
+    fun uniffi_bitkitcore_checksum_func_gift_order(
+    ): Short
+    fun uniffi_bitkitcore_checksum_func_gift_pay(
     ): Short
     fun uniffi_bitkitcore_checksum_func_init_db(
     ): Short
@@ -1189,6 +1213,9 @@ private fun uniffiCheckApiChecksums(lib: UniffiLib) {
     if (lib.uniffi_bitkitcore_checksum_func_get_cjit_entries() != 29342.toShort()) {
         throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
     }
+    if (lib.uniffi_bitkitcore_checksum_func_get_gift() != 386.toShort()) {
+        throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
+    }
     if (lib.uniffi_bitkitcore_checksum_func_get_info() != 43607.toShort()) {
         throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
     }
@@ -1201,7 +1228,16 @@ private fun uniffiCheckApiChecksums(lib: UniffiLib) {
     if (lib.uniffi_bitkitcore_checksum_func_get_orders() != 47460.toShort()) {
         throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
     }
+    if (lib.uniffi_bitkitcore_checksum_func_get_payment() != 29170.toShort()) {
+        throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
+    }
     if (lib.uniffi_bitkitcore_checksum_func_get_tags() != 11308.toShort()) {
+        throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
+    }
+    if (lib.uniffi_bitkitcore_checksum_func_gift_order() != 22040.toShort()) {
+        throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
+    }
+    if (lib.uniffi_bitkitcore_checksum_func_gift_pay() != 22142.toShort()) {
         throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
     }
     if (lib.uniffi_bitkitcore_checksum_func_init_db() != 9643.toShort()) {
@@ -3224,6 +3260,88 @@ public object FfiConverterTypeIDiscount: FfiConverterRustBuffer<IDiscount> {
             FfiConverterULong.write(value.`absoluteSat`, buf)
             FfiConverterDouble.write(value.`relative`, buf)
             FfiConverterULong.write(value.`overallSat`, buf)
+    }
+}
+
+
+
+data class IGift (
+    var `id`: kotlin.String, 
+    var `nodeId`: kotlin.String, 
+    var `orderId`: kotlin.String?, 
+    var `order`: IBtOrder?, 
+    var `bolt11PaymentId`: kotlin.String?, 
+    var `bolt11Payment`: IBtPayment?, 
+    var `appliedGiftCodeId`: kotlin.String, 
+    var `appliedGiftCode`: IGiftCode?
+) {
+    
+    companion object
+}
+
+public object FfiConverterTypeIGift: FfiConverterRustBuffer<IGift> {
+    override fun read(buf: ByteBuffer): IGift {
+        return IGift(
+            FfiConverterString.read(buf),
+            FfiConverterString.read(buf),
+            FfiConverterOptionalString.read(buf),
+            FfiConverterOptionalTypeIBtOrder.read(buf),
+            FfiConverterOptionalString.read(buf),
+            FfiConverterOptionalTypeIBtPayment.read(buf),
+            FfiConverterString.read(buf),
+            FfiConverterOptionalTypeIGiftCode.read(buf),
+        )
+    }
+
+    override fun allocationSize(value: IGift) = (
+            FfiConverterString.allocationSize(value.`id`) +
+            FfiConverterString.allocationSize(value.`nodeId`) +
+            FfiConverterOptionalString.allocationSize(value.`orderId`) +
+            FfiConverterOptionalTypeIBtOrder.allocationSize(value.`order`) +
+            FfiConverterOptionalString.allocationSize(value.`bolt11PaymentId`) +
+            FfiConverterOptionalTypeIBtPayment.allocationSize(value.`bolt11Payment`) +
+            FfiConverterString.allocationSize(value.`appliedGiftCodeId`) +
+            FfiConverterOptionalTypeIGiftCode.allocationSize(value.`appliedGiftCode`)
+    )
+
+    override fun write(value: IGift, buf: ByteBuffer) {
+            FfiConverterString.write(value.`id`, buf)
+            FfiConverterString.write(value.`nodeId`, buf)
+            FfiConverterOptionalString.write(value.`orderId`, buf)
+            FfiConverterOptionalTypeIBtOrder.write(value.`order`, buf)
+            FfiConverterOptionalString.write(value.`bolt11PaymentId`, buf)
+            FfiConverterOptionalTypeIBtPayment.write(value.`bolt11Payment`, buf)
+            FfiConverterString.write(value.`appliedGiftCodeId`, buf)
+            FfiConverterOptionalTypeIGiftCode.write(value.`appliedGiftCode`, buf)
+    }
+}
+
+
+
+data class IGiftCode (
+    var `id`: kotlin.String, 
+    var `code`: kotlin.String
+) {
+    
+    companion object
+}
+
+public object FfiConverterTypeIGiftCode: FfiConverterRustBuffer<IGiftCode> {
+    override fun read(buf: ByteBuffer): IGiftCode {
+        return IGiftCode(
+            FfiConverterString.read(buf),
+            FfiConverterString.read(buf),
+        )
+    }
+
+    override fun allocationSize(value: IGiftCode) = (
+            FfiConverterString.allocationSize(value.`id`) +
+            FfiConverterString.allocationSize(value.`code`)
+    )
+
+    override fun write(value: IGiftCode, buf: ByteBuffer) {
+            FfiConverterString.write(value.`id`, buf)
+            FfiConverterString.write(value.`code`, buf)
     }
 }
 
@@ -8249,6 +8367,64 @@ public object FfiConverterOptionalTypeIBtInfo: FfiConverterRustBuffer<IBtInfo?> 
 
 
 
+public object FfiConverterOptionalTypeIBtOrder: FfiConverterRustBuffer<IBtOrder?> {
+    override fun read(buf: ByteBuffer): IBtOrder? {
+        if (buf.get().toInt() == 0) {
+            return null
+        }
+        return FfiConverterTypeIBtOrder.read(buf)
+    }
+
+    override fun allocationSize(value: IBtOrder?): ULong {
+        if (value == null) {
+            return 1UL
+        } else {
+            return 1UL + FfiConverterTypeIBtOrder.allocationSize(value)
+        }
+    }
+
+    override fun write(value: IBtOrder?, buf: ByteBuffer) {
+        if (value == null) {
+            buf.put(0)
+        } else {
+            buf.put(1)
+            FfiConverterTypeIBtOrder.write(value, buf)
+        }
+    }
+}
+
+
+
+
+public object FfiConverterOptionalTypeIBtPayment: FfiConverterRustBuffer<IBtPayment?> {
+    override fun read(buf: ByteBuffer): IBtPayment? {
+        if (buf.get().toInt() == 0) {
+            return null
+        }
+        return FfiConverterTypeIBtPayment.read(buf)
+    }
+
+    override fun allocationSize(value: IBtPayment?): ULong {
+        if (value == null) {
+            return 1UL
+        } else {
+            return 1UL + FfiConverterTypeIBtPayment.allocationSize(value)
+        }
+    }
+
+    override fun write(value: IBtPayment?, buf: ByteBuffer) {
+        if (value == null) {
+            buf.put(0)
+        } else {
+            buf.put(1)
+            FfiConverterTypeIBtPayment.write(value, buf)
+        }
+    }
+}
+
+
+
+
 public object FfiConverterOptionalTypeIDiscount: FfiConverterRustBuffer<IDiscount?> {
     override fun read(buf: ByteBuffer): IDiscount? {
         if (buf.get().toInt() == 0) {
@@ -8271,6 +8447,35 @@ public object FfiConverterOptionalTypeIDiscount: FfiConverterRustBuffer<IDiscoun
         } else {
             buf.put(1)
             FfiConverterTypeIDiscount.write(value, buf)
+        }
+    }
+}
+
+
+
+
+public object FfiConverterOptionalTypeIGiftCode: FfiConverterRustBuffer<IGiftCode?> {
+    override fun read(buf: ByteBuffer): IGiftCode? {
+        if (buf.get().toInt() == 0) {
+            return null
+        }
+        return FfiConverterTypeIGiftCode.read(buf)
+    }
+
+    override fun allocationSize(value: IGiftCode?): ULong {
+        if (value == null) {
+            return 1UL
+        } else {
+            return 1UL + FfiConverterTypeIGiftCode.allocationSize(value)
+        }
+    }
+
+    override fun write(value: IGiftCode?, buf: ByteBuffer) {
+        if (value == null) {
+            buf.put(0)
+        } else {
+            buf.put(1)
+            FfiConverterTypeIGiftCode.write(value, buf)
         }
     }
 }
@@ -10023,6 +10228,21 @@ public object FfiConverterMapStringString: FfiConverterRustBuffer<Map<kotlin.Str
 
     @Throws(BlocktankException::class)
     @Suppress("ASSIGNED_BUT_NEVER_ACCESSED_VARIABLE")
+     suspend fun `getGift`(`giftId`: kotlin.String) : IGift {
+        return uniffiRustCallAsync(
+        UniffiLib.INSTANCE.uniffi_bitkitcore_fn_func_get_gift(FfiConverterString.lower(`giftId`),),
+        { future, callback, continuation -> UniffiLib.INSTANCE.ffi_bitkitcore_rust_future_poll_rust_buffer(future, callback, continuation) },
+        { future, continuation -> UniffiLib.INSTANCE.ffi_bitkitcore_rust_future_complete_rust_buffer(future, continuation) },
+        { future -> UniffiLib.INSTANCE.ffi_bitkitcore_rust_future_free_rust_buffer(future) },
+        // lift function
+        { FfiConverterTypeIGift.lift(it) },
+        // Error FFI converter
+        BlocktankException.ErrorHandler,
+    )
+    }
+
+    @Throws(BlocktankException::class)
+    @Suppress("ASSIGNED_BUT_NEVER_ACCESSED_VARIABLE")
      suspend fun `getInfo`(`refresh`: kotlin.Boolean?) : IBtInfo? {
         return uniffiRustCallAsync(
         UniffiLib.INSTANCE.uniffi_bitkitcore_fn_func_get_info(FfiConverterOptionalBoolean.lower(`refresh`),),
@@ -10081,6 +10301,21 @@ public object FfiConverterMapStringString: FfiConverterRustBuffer<Map<kotlin.Str
     )
     }
 
+    @Throws(BlocktankException::class)
+    @Suppress("ASSIGNED_BUT_NEVER_ACCESSED_VARIABLE")
+     suspend fun `getPayment`(`paymentId`: kotlin.String) : IBtBolt11Invoice {
+        return uniffiRustCallAsync(
+        UniffiLib.INSTANCE.uniffi_bitkitcore_fn_func_get_payment(FfiConverterString.lower(`paymentId`),),
+        { future, callback, continuation -> UniffiLib.INSTANCE.ffi_bitkitcore_rust_future_poll_rust_buffer(future, callback, continuation) },
+        { future, continuation -> UniffiLib.INSTANCE.ffi_bitkitcore_rust_future_complete_rust_buffer(future, continuation) },
+        { future -> UniffiLib.INSTANCE.ffi_bitkitcore_rust_future_free_rust_buffer(future) },
+        // lift function
+        { FfiConverterTypeIBtBolt11Invoice.lift(it) },
+        // Error FFI converter
+        BlocktankException.ErrorHandler,
+    )
+    }
+
     @Throws(ActivityException::class) fun `getTags`(`activityId`: kotlin.String): List<kotlin.String> {
             return FfiConverterSequenceString.lift(
     uniffiRustCallWithError(ActivityException) { _status ->
@@ -10090,6 +10325,36 @@ public object FfiConverterMapStringString: FfiConverterRustBuffer<Map<kotlin.Str
     )
     }
     
+
+    @Throws(BlocktankException::class)
+    @Suppress("ASSIGNED_BUT_NEVER_ACCESSED_VARIABLE")
+     suspend fun `giftOrder`(`clientNodeId`: kotlin.String, `code`: kotlin.String) : IGift {
+        return uniffiRustCallAsync(
+        UniffiLib.INSTANCE.uniffi_bitkitcore_fn_func_gift_order(FfiConverterString.lower(`clientNodeId`),FfiConverterString.lower(`code`),),
+        { future, callback, continuation -> UniffiLib.INSTANCE.ffi_bitkitcore_rust_future_poll_rust_buffer(future, callback, continuation) },
+        { future, continuation -> UniffiLib.INSTANCE.ffi_bitkitcore_rust_future_complete_rust_buffer(future, continuation) },
+        { future -> UniffiLib.INSTANCE.ffi_bitkitcore_rust_future_free_rust_buffer(future) },
+        // lift function
+        { FfiConverterTypeIGift.lift(it) },
+        // Error FFI converter
+        BlocktankException.ErrorHandler,
+    )
+    }
+
+    @Throws(BlocktankException::class)
+    @Suppress("ASSIGNED_BUT_NEVER_ACCESSED_VARIABLE")
+     suspend fun `giftPay`(`invoice`: kotlin.String) : IGift {
+        return uniffiRustCallAsync(
+        UniffiLib.INSTANCE.uniffi_bitkitcore_fn_func_gift_pay(FfiConverterString.lower(`invoice`),),
+        { future, callback, continuation -> UniffiLib.INSTANCE.ffi_bitkitcore_rust_future_poll_rust_buffer(future, callback, continuation) },
+        { future, continuation -> UniffiLib.INSTANCE.ffi_bitkitcore_rust_future_complete_rust_buffer(future, continuation) },
+        { future -> UniffiLib.INSTANCE.ffi_bitkitcore_rust_future_free_rust_buffer(future) },
+        // lift function
+        { FfiConverterTypeIGift.lift(it) },
+        // Error FFI converter
+        BlocktankException.ErrorHandler,
+    )
+    }
 
     @Throws(DbException::class) fun `initDb`(`basePath`: kotlin.String): kotlin.String {
             return FfiConverterString.lift(

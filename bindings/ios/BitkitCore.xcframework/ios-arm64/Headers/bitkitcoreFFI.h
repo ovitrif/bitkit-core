@@ -342,6 +342,11 @@ RustBuffer uniffi_bitkitcore_fn_func_get_all_unique_tags(RustCallStatus *_Nonnul
 uint64_t uniffi_bitkitcore_fn_func_get_cjit_entries(RustBuffer entry_ids, RustBuffer filter, int8_t refresh
 );
 #endif
+#ifndef UNIFFI_FFIDEF_UNIFFI_BITKITCORE_FN_FUNC_GET_GIFT
+#define UNIFFI_FFIDEF_UNIFFI_BITKITCORE_FN_FUNC_GET_GIFT
+uint64_t uniffi_bitkitcore_fn_func_get_gift(RustBuffer gift_id
+);
+#endif
 #ifndef UNIFFI_FFIDEF_UNIFFI_BITKITCORE_FN_FUNC_GET_INFO
 #define UNIFFI_FFIDEF_UNIFFI_BITKITCORE_FN_FUNC_GET_INFO
 uint64_t uniffi_bitkitcore_fn_func_get_info(RustBuffer refresh
@@ -362,9 +367,24 @@ uint64_t uniffi_bitkitcore_fn_func_get_min_zero_conf_tx_fee(RustBuffer order_id
 uint64_t uniffi_bitkitcore_fn_func_get_orders(RustBuffer order_ids, RustBuffer filter, int8_t refresh
 );
 #endif
+#ifndef UNIFFI_FFIDEF_UNIFFI_BITKITCORE_FN_FUNC_GET_PAYMENT
+#define UNIFFI_FFIDEF_UNIFFI_BITKITCORE_FN_FUNC_GET_PAYMENT
+uint64_t uniffi_bitkitcore_fn_func_get_payment(RustBuffer payment_id
+);
+#endif
 #ifndef UNIFFI_FFIDEF_UNIFFI_BITKITCORE_FN_FUNC_GET_TAGS
 #define UNIFFI_FFIDEF_UNIFFI_BITKITCORE_FN_FUNC_GET_TAGS
 RustBuffer uniffi_bitkitcore_fn_func_get_tags(RustBuffer activity_id, RustCallStatus *_Nonnull out_status
+);
+#endif
+#ifndef UNIFFI_FFIDEF_UNIFFI_BITKITCORE_FN_FUNC_GIFT_ORDER
+#define UNIFFI_FFIDEF_UNIFFI_BITKITCORE_FN_FUNC_GIFT_ORDER
+uint64_t uniffi_bitkitcore_fn_func_gift_order(RustBuffer client_node_id, RustBuffer code
+);
+#endif
+#ifndef UNIFFI_FFIDEF_UNIFFI_BITKITCORE_FN_FUNC_GIFT_PAY
+#define UNIFFI_FFIDEF_UNIFFI_BITKITCORE_FN_FUNC_GIFT_PAY
+uint64_t uniffi_bitkitcore_fn_func_gift_pay(RustBuffer invoice
 );
 #endif
 #ifndef UNIFFI_FFIDEF_UNIFFI_BITKITCORE_FN_FUNC_INIT_DB
@@ -887,6 +907,12 @@ uint16_t uniffi_bitkitcore_checksum_func_get_cjit_entries(void
     
 );
 #endif
+#ifndef UNIFFI_FFIDEF_UNIFFI_BITKITCORE_CHECKSUM_FUNC_GET_GIFT
+#define UNIFFI_FFIDEF_UNIFFI_BITKITCORE_CHECKSUM_FUNC_GET_GIFT
+uint16_t uniffi_bitkitcore_checksum_func_get_gift(void
+    
+);
+#endif
 #ifndef UNIFFI_FFIDEF_UNIFFI_BITKITCORE_CHECKSUM_FUNC_GET_INFO
 #define UNIFFI_FFIDEF_UNIFFI_BITKITCORE_CHECKSUM_FUNC_GET_INFO
 uint16_t uniffi_bitkitcore_checksum_func_get_info(void
@@ -911,9 +937,27 @@ uint16_t uniffi_bitkitcore_checksum_func_get_orders(void
     
 );
 #endif
+#ifndef UNIFFI_FFIDEF_UNIFFI_BITKITCORE_CHECKSUM_FUNC_GET_PAYMENT
+#define UNIFFI_FFIDEF_UNIFFI_BITKITCORE_CHECKSUM_FUNC_GET_PAYMENT
+uint16_t uniffi_bitkitcore_checksum_func_get_payment(void
+    
+);
+#endif
 #ifndef UNIFFI_FFIDEF_UNIFFI_BITKITCORE_CHECKSUM_FUNC_GET_TAGS
 #define UNIFFI_FFIDEF_UNIFFI_BITKITCORE_CHECKSUM_FUNC_GET_TAGS
 uint16_t uniffi_bitkitcore_checksum_func_get_tags(void
+    
+);
+#endif
+#ifndef UNIFFI_FFIDEF_UNIFFI_BITKITCORE_CHECKSUM_FUNC_GIFT_ORDER
+#define UNIFFI_FFIDEF_UNIFFI_BITKITCORE_CHECKSUM_FUNC_GIFT_ORDER
+uint16_t uniffi_bitkitcore_checksum_func_gift_order(void
+    
+);
+#endif
+#ifndef UNIFFI_FFIDEF_UNIFFI_BITKITCORE_CHECKSUM_FUNC_GIFT_PAY
+#define UNIFFI_FFIDEF_UNIFFI_BITKITCORE_CHECKSUM_FUNC_GIFT_PAY
+uint16_t uniffi_bitkitcore_checksum_func_gift_pay(void
     
 );
 #endif
