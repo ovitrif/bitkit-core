@@ -9,7 +9,7 @@ use rust_blocktank_client::{
     IBtOrder,
     ICJitEntry
 };
-use crate::modules::blocktank::{BlocktankDB, BlocktankError};
+use crate::modules::blocktank::{BlocktankDB, BlocktankError, IGift};
 
 impl BlocktankDB {
     /// Fetches service information from Blocktank and stores it in the database.
@@ -309,6 +309,45 @@ impl BlocktankDB {
             .await
             .map_err(|e| BlocktankError::DataError {
                 error_details: format!("Failed to send test notification: {}", e)
+            })
+    }
+
+    /// Makes a payment for a gift invoice
+    pub async fn gift_pay(&self, invoice: &str) -> Result<IGift, BlocktankError> {
+        self.client.gift_pay(invoice)
+            .await
+            .map_err(|e| BlocktankError::DataError {
+                error_details: format!("Failed to pay gift invoice: {}", e)
+            })
+            .map(|gift| gift.into())
+    }
+
+    /// Creates a gift order
+    pub async fn gift_order(&self, client_node_id: &str, code: &str) -> Result<IGift, BlocktankError> {
+        self.client.gift_order(client_node_id, code)
+            .await
+            .map_err(|e| BlocktankError::DataError {
+                error_details: format!("Failed to create gift order: {}", e)
+            })
+            .map(|gift| gift.into())
+    }
+
+    /// Gets a paid gift payment
+    pub async fn get_gift(&self, gift_id: &str) -> Result<IGift, BlocktankError> {
+        self.client.get_gift(gift_id)
+            .await
+            .map_err(|e| BlocktankError::DataError {
+                error_details: format!("Failed to get gift: {}", e)
+            })
+            .map(|gift| gift.into())
+    }
+
+    /// Gets a paid payment
+    pub async fn get_payment(&self, payment_id: &str) -> Result<IBtBolt11Invoice, BlocktankError> {
+        self.client.get_payment(payment_id)
+            .await
+            .map_err(|e| BlocktankError::DataError {
+                error_details: format!("Failed to get payment: {}", e)
             })
     }
 }

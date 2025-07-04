@@ -13,7 +13,7 @@ pub use modules::lnurl;
 pub use modules::onchain;
 pub use modules::activity;
 use crate::activity::{ActivityError, ActivityDB, OnchainActivity, LightningActivity, Activity, ActivityFilter, SortDirection, PaymentType, DbError};
-use crate::modules::blocktank::{BlocktankDB, BlocktankError, IBtInfo, IBtOrder, CreateOrderOptions, BtOrderState2, IBt0ConfMinTxFeeWindow, IBtEstimateFeeResponse, IBtEstimateFeeResponse2, CreateCjitOptions, ICJitEntry, CJitStateEnum, IBtBolt11Invoice};
+use crate::modules::blocktank::{BlocktankDB, BlocktankError, IBtInfo, IBtOrder, CreateOrderOptions, BtOrderState2, IBt0ConfMinTxFeeWindow, IBtEstimateFeeResponse, IBtEstimateFeeResponse2, CreateCjitOptions, ICJitEntry, CJitStateEnum, IBtBolt11Invoice, IGift};
 use crate::onchain::{AddressError, ValidationResult, WordCount, GetAddressResponse, Network, GetAddressesResponse};
 
 use std::sync::Mutex as StdMutex;
@@ -751,6 +751,78 @@ pub async fn test_notification(
             notification_type.as_deref(),
             custom_url.as_deref()
         ).await
+    }).await.unwrap_or_else(|e| Err(BlocktankError::ConnectionError {
+        error_details: format!("Runtime error: {}", e)
+    }))
+}
+
+#[uniffi::export]
+pub async fn gift_pay(invoice: String) -> Result<IGift, BlocktankError> {
+    let rt = ensure_runtime();
+    rt.spawn(async move {
+        let cell = ASYNC_DB.get().ok_or(BlocktankError::ConnectionError {
+            error_details: "Database not initialized. Call init_db first.".to_string()
+        })?;
+        let guard = cell.lock().await;
+        let db = guard.blocktank_db.as_ref().ok_or(BlocktankError::ConnectionError {
+            error_details: "Database not initialized. Call init_db first.".to_string()
+        })?;
+
+        db.gift_pay(&invoice).await
+    }).await.unwrap_or_else(|e| Err(BlocktankError::ConnectionError {
+        error_details: format!("Runtime error: {}", e)
+    }))
+}
+
+#[uniffi::export]
+pub async fn gift_order(client_node_id: String, code: String) -> Result<IGift, BlocktankError> {
+    let rt = ensure_runtime();
+    rt.spawn(async move {
+        let cell = ASYNC_DB.get().ok_or(BlocktankError::ConnectionError {
+            error_details: "Database not initialized. Call init_db first.".to_string()
+        })?;
+        let guard = cell.lock().await;
+        let db = guard.blocktank_db.as_ref().ok_or(BlocktankError::ConnectionError {
+            error_details: "Database not initialized. Call init_db first.".to_string()
+        })?;
+
+        db.gift_order(&client_node_id, &code).await
+    }).await.unwrap_or_else(|e| Err(BlocktankError::ConnectionError {
+        error_details: format!("Runtime error: {}", e)
+    }))
+}
+
+#[uniffi::export]
+pub async fn get_gift(gift_id: String) -> Result<IGift, BlocktankError> {
+    let rt = ensure_runtime();
+    rt.spawn(async move {
+        let cell = ASYNC_DB.get().ok_or(BlocktankError::ConnectionError {
+            error_details: "Database not initialized. Call init_db first.".to_string()
+        })?;
+        let guard = cell.lock().await;
+        let db = guard.blocktank_db.as_ref().ok_or(BlocktankError::ConnectionError {
+            error_details: "Database not initialized. Call init_db first.".to_string()
+        })?;
+
+        db.get_gift(&gift_id).await
+    }).await.unwrap_or_else(|e| Err(BlocktankError::ConnectionError {
+        error_details: format!("Runtime error: {}", e)
+    }))
+}
+
+#[uniffi::export]
+pub async fn get_payment(payment_id: String) -> Result<IBtBolt11Invoice, BlocktankError> {
+    let rt = ensure_runtime();
+    rt.spawn(async move {
+        let cell = ASYNC_DB.get().ok_or(BlocktankError::ConnectionError {
+            error_details: "Database not initialized. Call init_db first.".to_string()
+        })?;
+        let guard = cell.lock().await;
+        let db = guard.blocktank_db.as_ref().ok_or(BlocktankError::ConnectionError {
+            error_details: "Database not initialized. Call init_db first.".to_string()
+        })?;
+
+        db.get_payment(&payment_id).await.map(|payment| payment.into())
     }).await.unwrap_or_else(|e| Err(BlocktankError::ConnectionError {
         error_details: format!("Runtime error: {}", e)
     }))

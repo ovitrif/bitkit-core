@@ -1,4 +1,3 @@
-use openssl::derive;
 use rust_blocktank_client::{
     BitcoinNetworkEnum as ExternalBitcoinNetworkEnum,
     BtBolt11InvoiceState as ExternalBtBolt11InvoiceState,
@@ -32,6 +31,8 @@ use rust_blocktank_client::{
     IManualRefund as ExternalIManualRefund,
     CreateOrderOptions as ExternalCreateOrderOptions,
     CreateCjitOptions as ExternalCreateCjitOptions,
+    IGift as ExternalIGift,
+    IGiftCode as ExternalIGiftCode,
 };
 use serde::{Deserialize, Serialize};
 
@@ -1160,6 +1161,72 @@ impl From<CreateCjitOptions> for ExternalCreateCjitOptions {
         Self {
             source: other.source,
             discount_code: other.discount_code,
+        }
+    }
+}
+
+#[derive(uniffi::Record, Deserialize, Serialize)]
+pub struct IGiftCode {
+    pub id: String,
+    pub code: String,
+}
+
+impl From<ExternalIGiftCode> for IGiftCode {
+    fn from(other: ExternalIGiftCode) -> Self {
+        Self {
+            id: other.id,
+            code: other.code,
+        }
+    }
+}
+
+impl From<IGiftCode> for ExternalIGiftCode {
+    fn from(other: IGiftCode) -> Self {
+        Self {
+            id: other.id,
+            code: other.code,
+        }
+    }
+}
+
+#[derive(uniffi::Record, Deserialize, Serialize)]
+pub struct IGift {
+    pub id: String,
+    pub node_id: String,
+    pub order_id: Option<String>,
+    pub order: Option<IBtOrder>,
+    pub bolt11_payment_id: Option<String>,
+    pub bolt11_payment: Option<IBtPayment>,
+    pub applied_gift_code_id: String,
+    pub applied_gift_code: Option<IGiftCode>,
+}
+
+impl From<ExternalIGift> for IGift {
+    fn from(other: ExternalIGift) -> Self {
+        Self {
+            id: other.id,
+            node_id: other.node_id,
+            order_id: other.order_id,
+            order: other.order.map(|o| o.into()),
+            bolt11_payment_id: other.bolt11_payment_id,
+            bolt11_payment: other.bolt11_payment.map(|p| p.into()),
+            applied_gift_code_id: other.applied_gift_code_id,
+            applied_gift_code: other.applied_gift_code.map(|c| c.into()),
+        }
+    }
+}
+
+impl From<IGift> for ExternalIGift {
+    fn from(other: IGift) -> Self {
+        Self {
+            id: other.id,
+            node_id: other.node_id,
+            order_id: other.order_id,
+            order: other.order.map(|o| o.into()),
+            bolt11_payment_id: other.bolt11_payment_id,
+            bolt11_payment: other.bolt11_payment.map(|p| p.into()),
+            applied_gift_code_id: other.applied_gift_code_id,
+            applied_gift_code: other.applied_gift_code.map(|c| c.into()),
         }
     }
 }

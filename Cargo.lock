@@ -395,7 +395,7 @@ checksum = "5c8214115b7bf84099f1309324e63141d4c5d7cc26862f97a0a857dbefe165bd"
 
 [[package]]
 name = "bitkitcore"
-version = "0.1.6"
+version = "0.1.7"
 dependencies = [
  "async-trait",
  "bip39",
@@ -2188,9 +2188,9 @@ dependencies = [
 
 [[package]]
 name = "rust-blocktank-client"
-version = "0.0.11"
+version = "0.0.12"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "957341549517b87b7d8a399df69c0381ebc6a3bbe962a08ef18b85f2a0c3bdeb"
+checksum = "22cd967406c75ff15a29f5de595c562f354e5281301cec44baab23c6adf2f466"
 dependencies = [
  "chrono",
  "reqwest",

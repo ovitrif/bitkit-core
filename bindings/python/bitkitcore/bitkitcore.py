@@ -497,6 +497,8 @@ def _uniffi_check_api_checksums(lib):
         raise InternalError("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
     if lib.uniffi_bitkitcore_checksum_func_get_cjit_entries() != 29342:
         raise InternalError("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
+    if lib.uniffi_bitkitcore_checksum_func_get_gift() != 386:
+        raise InternalError("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
     if lib.uniffi_bitkitcore_checksum_func_get_info() != 43607:
         raise InternalError("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
     if lib.uniffi_bitkitcore_checksum_func_get_lnurl_invoice() != 5475:
@@ -505,7 +507,13 @@ def _uniffi_check_api_checksums(lib):
         raise InternalError("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
     if lib.uniffi_bitkitcore_checksum_func_get_orders() != 47460:
         raise InternalError("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
+    if lib.uniffi_bitkitcore_checksum_func_get_payment() != 29170:
+        raise InternalError("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
     if lib.uniffi_bitkitcore_checksum_func_get_tags() != 11308:
+        raise InternalError("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
+    if lib.uniffi_bitkitcore_checksum_func_gift_order() != 22040:
+        raise InternalError("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
+    if lib.uniffi_bitkitcore_checksum_func_gift_pay() != 22142:
         raise InternalError("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
     if lib.uniffi_bitkitcore_checksum_func_init_db() != 9643:
         raise InternalError("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
@@ -789,6 +797,10 @@ _UniffiLib.uniffi_bitkitcore_fn_func_get_cjit_entries.argtypes = (
     ctypes.c_int8,
 )
 _UniffiLib.uniffi_bitkitcore_fn_func_get_cjit_entries.restype = ctypes.c_uint64
+_UniffiLib.uniffi_bitkitcore_fn_func_get_gift.argtypes = (
+    _UniffiRustBuffer,
+)
+_UniffiLib.uniffi_bitkitcore_fn_func_get_gift.restype = ctypes.c_uint64
 _UniffiLib.uniffi_bitkitcore_fn_func_get_info.argtypes = (
     _UniffiRustBuffer,
 )
@@ -808,11 +820,24 @@ _UniffiLib.uniffi_bitkitcore_fn_func_get_orders.argtypes = (
     ctypes.c_int8,
 )
 _UniffiLib.uniffi_bitkitcore_fn_func_get_orders.restype = ctypes.c_uint64
+_UniffiLib.uniffi_bitkitcore_fn_func_get_payment.argtypes = (
+    _UniffiRustBuffer,
+)
+_UniffiLib.uniffi_bitkitcore_fn_func_get_payment.restype = ctypes.c_uint64
 _UniffiLib.uniffi_bitkitcore_fn_func_get_tags.argtypes = (
     _UniffiRustBuffer,
     ctypes.POINTER(_UniffiRustCallStatus),
 )
 _UniffiLib.uniffi_bitkitcore_fn_func_get_tags.restype = _UniffiRustBuffer
+_UniffiLib.uniffi_bitkitcore_fn_func_gift_order.argtypes = (
+    _UniffiRustBuffer,
+    _UniffiRustBuffer,
+)
+_UniffiLib.uniffi_bitkitcore_fn_func_gift_order.restype = ctypes.c_uint64
+_UniffiLib.uniffi_bitkitcore_fn_func_gift_pay.argtypes = (
+    _UniffiRustBuffer,
+)
+_UniffiLib.uniffi_bitkitcore_fn_func_gift_pay.restype = ctypes.c_uint64
 _UniffiLib.uniffi_bitkitcore_fn_func_init_db.argtypes = (
     _UniffiRustBuffer,
     ctypes.POINTER(_UniffiRustCallStatus),
@@ -1351,6 +1376,9 @@ _UniffiLib.uniffi_bitkitcore_checksum_func_get_all_unique_tags.restype = ctypes.
 _UniffiLib.uniffi_bitkitcore_checksum_func_get_cjit_entries.argtypes = (
 )
 _UniffiLib.uniffi_bitkitcore_checksum_func_get_cjit_entries.restype = ctypes.c_uint16
+_UniffiLib.uniffi_bitkitcore_checksum_func_get_gift.argtypes = (
+)
+_UniffiLib.uniffi_bitkitcore_checksum_func_get_gift.restype = ctypes.c_uint16
 _UniffiLib.uniffi_bitkitcore_checksum_func_get_info.argtypes = (
 )
 _UniffiLib.uniffi_bitkitcore_checksum_func_get_info.restype = ctypes.c_uint16
@@ -1363,9 +1391,18 @@ _UniffiLib.uniffi_bitkitcore_checksum_func_get_min_zero_conf_tx_fee.restype = ct
 _UniffiLib.uniffi_bitkitcore_checksum_func_get_orders.argtypes = (
 )
 _UniffiLib.uniffi_bitkitcore_checksum_func_get_orders.restype = ctypes.c_uint16
+_UniffiLib.uniffi_bitkitcore_checksum_func_get_payment.argtypes = (
+)
+_UniffiLib.uniffi_bitkitcore_checksum_func_get_payment.restype = ctypes.c_uint16
 _UniffiLib.uniffi_bitkitcore_checksum_func_get_tags.argtypes = (
 )
 _UniffiLib.uniffi_bitkitcore_checksum_func_get_tags.restype = ctypes.c_uint16
+_UniffiLib.uniffi_bitkitcore_checksum_func_gift_order.argtypes = (
+)
+_UniffiLib.uniffi_bitkitcore_checksum_func_gift_order.restype = ctypes.c_uint16
+_UniffiLib.uniffi_bitkitcore_checksum_func_gift_pay.argtypes = (
+)
+_UniffiLib.uniffi_bitkitcore_checksum_func_gift_pay.restype = ctypes.c_uint16
 _UniffiLib.uniffi_bitkitcore_checksum_func_init_db.argtypes = (
 )
 _UniffiLib.uniffi_bitkitcore_checksum_func_init_db.restype = ctypes.c_uint16
@@ -3959,6 +3996,122 @@ class _UniffiConverterTypeIDiscount(_UniffiConverterRustBuffer):
         _UniffiConverterUInt64.write(value.absolute_sat, buf)
         _UniffiConverterDouble.write(value.relative, buf)
         _UniffiConverterUInt64.write(value.overall_sat, buf)
+
+
+class IGift:
+    id: "str"
+    node_id: "str"
+    order_id: "typing.Optional[str]"
+    order: "typing.Optional[IBtOrder]"
+    bolt11_payment_id: "typing.Optional[str]"
+    bolt11_payment: "typing.Optional[IBtPayment]"
+    applied_gift_code_id: "str"
+    applied_gift_code: "typing.Optional[IGiftCode]"
+    @typing.no_type_check
+    def __init__(self, *, id: "str", node_id: "str", order_id: "typing.Optional[str]", order: "typing.Optional[IBtOrder]", bolt11_payment_id: "typing.Optional[str]", bolt11_payment: "typing.Optional[IBtPayment]", applied_gift_code_id: "str", applied_gift_code: "typing.Optional[IGiftCode]"):
+        self.id = id
+        self.node_id = node_id
+        self.order_id = order_id
+        self.order = order
+        self.bolt11_payment_id = bolt11_payment_id
+        self.bolt11_payment = bolt11_payment
+        self.applied_gift_code_id = applied_gift_code_id
+        self.applied_gift_code = applied_gift_code
+
+    def __str__(self):
+        return "IGift(id={}, node_id={}, order_id={}, order={}, bolt11_payment_id={}, bolt11_payment={}, applied_gift_code_id={}, applied_gift_code={})".format(self.id, self.node_id, self.order_id, self.order, self.bolt11_payment_id, self.bolt11_payment, self.applied_gift_code_id, self.applied_gift_code)
+
+    def __eq__(self, other):
+        if self.id != other.id:
+            return False
+        if self.node_id != other.node_id:
+            return False
+        if self.order_id != other.order_id:
+            return False
+        if self.order != other.order:
+            return False
+        if self.bolt11_payment_id != other.bolt11_payment_id:
+            return False
+        if self.bolt11_payment != other.bolt11_payment:
+            return False
+        if self.applied_gift_code_id != other.applied_gift_code_id:
+            return False
+        if self.applied_gift_code != other.applied_gift_code:
+            return False
+        return True
+
+class _UniffiConverterTypeIGift(_UniffiConverterRustBuffer):
+    @staticmethod
+    def read(buf):
+        return IGift(
+            id=_UniffiConverterString.read(buf),
+            node_id=_UniffiConverterString.read(buf),
+            order_id=_UniffiConverterOptionalString.read(buf),
+            order=_UniffiConverterOptionalTypeIBtOrder.read(buf),
+            bolt11_payment_id=_UniffiConverterOptionalString.read(buf),
+            bolt11_payment=_UniffiConverterOptionalTypeIBtPayment.read(buf),
+            applied_gift_code_id=_UniffiConverterString.read(buf),
+            applied_gift_code=_UniffiConverterOptionalTypeIGiftCode.read(buf),
+        )
+
+    @staticmethod
+    def check_lower(value):
+        _UniffiConverterString.check_lower(value.id)
+        _UniffiConverterString.check_lower(value.node_id)
+        _UniffiConverterOptionalString.check_lower(value.order_id)
+        _UniffiConverterOptionalTypeIBtOrder.check_lower(value.order)
+        _UniffiConverterOptionalString.check_lower(value.bolt11_payment_id)
+        _UniffiConverterOptionalTypeIBtPayment.check_lower(value.bolt11_payment)
+        _UniffiConverterString.check_lower(value.applied_gift_code_id)
+        _UniffiConverterOptionalTypeIGiftCode.check_lower(value.applied_gift_code)
+
+    @staticmethod
+    def write(value, buf):
+        _UniffiConverterString.write(value.id, buf)
+        _UniffiConverterString.write(value.node_id, buf)
+        _UniffiConverterOptionalString.write(value.order_id, buf)
+        _UniffiConverterOptionalTypeIBtOrder.write(value.order, buf)
+        _UniffiConverterOptionalString.write(value.bolt11_payment_id, buf)
+        _UniffiConverterOptionalTypeIBtPayment.write(value.bolt11_payment, buf)
+        _UniffiConverterString.write(value.applied_gift_code_id, buf)
+        _UniffiConverterOptionalTypeIGiftCode.write(value.applied_gift_code, buf)
+
+
+class IGiftCode:
+    id: "str"
+    code: "str"
+    @typing.no_type_check
+    def __init__(self, *, id: "str", code: "str"):
+        self.id = id
+        self.code = code
+
+    def __str__(self):
+        return "IGiftCode(id={}, code={})".format(self.id, self.code)
+
+    def __eq__(self, other):
+        if self.id != other.id:
+            return False
+        if self.code != other.code:
+            return False
+        return True
+
+class _UniffiConverterTypeIGiftCode(_UniffiConverterRustBuffer):
+    @staticmethod
+    def read(buf):
+        return IGiftCode(
+            id=_UniffiConverterString.read(buf),
+            code=_UniffiConverterString.read(buf),
+        )
+
+    @staticmethod
+    def check_lower(value):
+        _UniffiConverterString.check_lower(value.id)
+        _UniffiConverterString.check_lower(value.code)
+
+    @staticmethod
+    def write(value, buf):
+        _UniffiConverterString.write(value.id, buf)
+        _UniffiConverterString.write(value.code, buf)
 
 
 class ILspNode:
@@ -10645,6 +10798,60 @@ class _UniffiConverterOptionalTypeIBtInfo(_UniffiConverterRustBuffer):
 
 
 
+class _UniffiConverterOptionalTypeIBtOrder(_UniffiConverterRustBuffer):
+    @classmethod
+    def check_lower(cls, value):
+        if value is not None:
+            _UniffiConverterTypeIBtOrder.check_lower(value)
+
+    @classmethod
+    def write(cls, value, buf):
+        if value is None:
+            buf.write_u8(0)
+            return
+
+        buf.write_u8(1)
+        _UniffiConverterTypeIBtOrder.write(value, buf)
+
+    @classmethod
+    def read(cls, buf):
+        flag = buf.read_u8()
+        if flag == 0:
+            return None
+        elif flag == 1:
+            return _UniffiConverterTypeIBtOrder.read(buf)
+        else:
+            raise InternalError("Unexpected flag byte for optional type")
+
+
+
+class _UniffiConverterOptionalTypeIBtPayment(_UniffiConverterRustBuffer):
+    @classmethod
+    def check_lower(cls, value):
+        if value is not None:
+            _UniffiConverterTypeIBtPayment.check_lower(value)
+
+    @classmethod
+    def write(cls, value, buf):
+        if value is None:
+            buf.write_u8(0)
+            return
+
+        buf.write_u8(1)
+        _UniffiConverterTypeIBtPayment.write(value, buf)
+
+    @classmethod
+    def read(cls, buf):
+        flag = buf.read_u8()
+        if flag == 0:
+            return None
+        elif flag == 1:
+            return _UniffiConverterTypeIBtPayment.read(buf)
+        else:
+            raise InternalError("Unexpected flag byte for optional type")
+
+
+
 class _UniffiConverterOptionalTypeIDiscount(_UniffiConverterRustBuffer):
     @classmethod
     def check_lower(cls, value):
@@ -10667,6 +10874,33 @@ class _UniffiConverterOptionalTypeIDiscount(_UniffiConverterRustBuffer):
             return None
         elif flag == 1:
             return _UniffiConverterTypeIDiscount.read(buf)
+        else:
+            raise InternalError("Unexpected flag byte for optional type")
+
+
+
+class _UniffiConverterOptionalTypeIGiftCode(_UniffiConverterRustBuffer):
+    @classmethod
+    def check_lower(cls, value):
+        if value is not None:
+            _UniffiConverterTypeIGiftCode.check_lower(value)
+
+    @classmethod
+    def write(cls, value, buf):
+        if value is None:
+            buf.write_u8(0)
+            return
+
+        buf.write_u8(1)
+        _UniffiConverterTypeIGiftCode.write(value, buf)
+
+    @classmethod
+    def read(cls, buf):
+        flag = buf.read_u8()
+        if flag == 0:
+            return None
+        elif flag == 1:
+            return _UniffiConverterTypeIGiftCode.read(buf)
         else:
             raise InternalError("Unexpected flag byte for optional type")
 
@@ -12507,6 +12741,23 @@ async def get_cjit_entries(entry_ids: "typing.Optional[typing.List[str]]",filter
 _UniffiConverterTypeBlocktankError,
 
     )
+async def get_gift(gift_id: "str") -> "IGift":
+
+    _UniffiConverterString.check_lower(gift_id)
+    
+    return await _uniffi_rust_call_async(
+        _UniffiLib.uniffi_bitkitcore_fn_func_get_gift(
+        _UniffiConverterString.lower(gift_id)),
+        _UniffiLib.ffi_bitkitcore_rust_future_poll_rust_buffer,
+        _UniffiLib.ffi_bitkitcore_rust_future_complete_rust_buffer,
+        _UniffiLib.ffi_bitkitcore_rust_future_free_rust_buffer,
+        # lift function
+        _UniffiConverterTypeIGift.lift,
+        
+    # Error FFI converter
+_UniffiConverterTypeBlocktankError,
+
+    )
 async def get_info(refresh: "typing.Optional[bool]") -> "typing.Optional[IBtInfo]":
 
     _UniffiConverterOptionalBool.check_lower(refresh)
@@ -12584,6 +12835,23 @@ async def get_orders(order_ids: "typing.Optional[typing.List[str]]",filter: "typ
 _UniffiConverterTypeBlocktankError,
 
     )
+async def get_payment(payment_id: "str") -> "IBtBolt11Invoice":
+
+    _UniffiConverterString.check_lower(payment_id)
+    
+    return await _uniffi_rust_call_async(
+        _UniffiLib.uniffi_bitkitcore_fn_func_get_payment(
+        _UniffiConverterString.lower(payment_id)),
+        _UniffiLib.ffi_bitkitcore_rust_future_poll_rust_buffer,
+        _UniffiLib.ffi_bitkitcore_rust_future_complete_rust_buffer,
+        _UniffiLib.ffi_bitkitcore_rust_future_free_rust_buffer,
+        # lift function
+        _UniffiConverterTypeIBtBolt11Invoice.lift,
+        
+    # Error FFI converter
+_UniffiConverterTypeBlocktankError,
+
+    )
 
 def get_tags(activity_id: "str") -> "typing.List[str]":
     _UniffiConverterString.check_lower(activity_id)
@@ -12591,6 +12859,43 @@ def get_tags(activity_id: "str") -> "typing.List[str]":
     return _UniffiConverterSequenceString.lift(_rust_call_with_error(_UniffiConverterTypeActivityError,_UniffiLib.uniffi_bitkitcore_fn_func_get_tags,
         _UniffiConverterString.lower(activity_id)))
 
+async def gift_order(client_node_id: "str",code: "str") -> "IGift":
+
+    _UniffiConverterString.check_lower(client_node_id)
+    
+    _UniffiConverterString.check_lower(code)
+    
+    return await _uniffi_rust_call_async(
+        _UniffiLib.uniffi_bitkitcore_fn_func_gift_order(
+        _UniffiConverterString.lower(client_node_id),
+        _UniffiConverterString.lower(code)),
+        _UniffiLib.ffi_bitkitcore_rust_future_poll_rust_buffer,
+        _UniffiLib.ffi_bitkitcore_rust_future_complete_rust_buffer,
+        _UniffiLib.ffi_bitkitcore_rust_future_free_rust_buffer,
+        # lift function
+        _UniffiConverterTypeIGift.lift,
+        
+    # Error FFI converter
+_UniffiConverterTypeBlocktankError,
+
+    )
+async def gift_pay(invoice: "str") -> "IGift":
+
+    _UniffiConverterString.check_lower(invoice)
+    
+    return await _uniffi_rust_call_async(
+        _UniffiLib.uniffi_bitkitcore_fn_func_gift_pay(
+        _UniffiConverterString.lower(invoice)),
+        _UniffiLib.ffi_bitkitcore_rust_future_poll_rust_buffer,
+        _UniffiLib.ffi_bitkitcore_rust_future_complete_rust_buffer,
+        _UniffiLib.ffi_bitkitcore_rust_future_free_rust_buffer,
+        # lift function
+        _UniffiConverterTypeIGift.lift,
+        
+    # Error FFI converter
+_UniffiConverterTypeBlocktankError,
+
+    )
 
 def init_db(base_path: "str") -> "str":
     _UniffiConverterString.check_lower(base_path)
@@ -13275,6 +13580,8 @@ __all__ = [
     "IBtPayment",
     "IcJitEntry",
     "IDiscount",
+    "IGift",
+    "IGiftCode",
     "ILspNode",
     "IManualRefund",
     "LightningActivity",
@@ -13325,11 +13632,15 @@ __all__ = [
     "get_activity_by_id",
     "get_all_unique_tags",
     "get_cjit_entries",
+    "get_gift",
     "get_info",
     "get_lnurl_invoice",
     "get_min_zero_conf_tx_fee",
     "get_orders",
+    "get_payment",
     "get_tags",
+    "gift_order",
+    "gift_pay",
     "init_db",
     "insert_activity",
     "lnurl_auth",

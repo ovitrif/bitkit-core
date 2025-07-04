@@ -119,6 +119,18 @@ async fn regtest_close_channel(
     vout: u32,
     force_close_after_s: Option<u64>,
 ) -> Result<String, BlocktankError>
+
+// Pay a gift invoice
+async fn gift_pay(invoice: String) -> Result<IGift, BlocktankError>
+
+// Create a gift order with a gift code
+async fn gift_order(client_node_id: String, code: String) -> Result<IGift, BlocktankError>
+
+// Get gift payment details
+async fn get_gift(gift_id: String) -> Result<IGift, BlocktankError>
+
+// Get payment information
+async fn get_payment(payment_id: String) -> Result<IBtBolt11Invoice, BlocktankError>
 ```
 
 ## Usage Examples
@@ -227,6 +239,27 @@ func manageBlocktank() async {
         )
         print("Channel closed, txid: \(closeTxid)")
         
+        // Gift code operations
+        let giftInvoice = "lnbc..." // Gift invoice to pay
+        let gift = try await giftPay(invoice: giftInvoice)
+        print("Paid gift invoice, gift ID: \(gift.id)")
+        
+        let giftCode = "GIFT123CODE"
+        let clientNodeId = "03abcd..."
+        let giftOrder = try await giftOrder(
+            clientNodeId: clientNodeId,
+            code: giftCode
+        )
+        print("Created gift order: \(giftOrder.id)")
+        
+        let retrievedGift = try await getGift(giftId: gift.id)
+        print("Gift status: \(retrievedGift.order?.state ?? "unknown")")
+        
+        if let paymentId = gift.bolt11PaymentId {
+            let payment = try await getPayment(paymentId: paymentId)
+            print("Payment state: \(payment.state)")
+        }
+        
     } catch {
         print("Error: \(error)")
     }
@@ -331,6 +364,27 @@ suspend fun manageBlocktank() {
             forceCloseAfterS = 60
         )
         println("Channel closed, txid: $closeTxid")
+        
+        // Gift code operations
+        val giftInvoice = "lnbc..." // Gift invoice to pay
+        val gift = giftPay(invoice = giftInvoice)
+        println("Paid gift invoice, gift ID: ${gift.id}")
+        
+        val giftCode = "GIFT123CODE"
+        val clientNodeId = "03abcd..."
+        val giftOrder = giftOrder(
+            clientNodeId = clientNodeId,
+            code = giftCode
+        )
+        println("Created gift order: ${giftOrder.id}")
+        
+        val retrievedGift = getGift(giftId = gift.id)
+        println("Gift status: ${retrievedGift.order?.state ?: "unknown"}")
+        
+        gift.bolt11PaymentId?.let { paymentId ->
+            val payment = getPayment(paymentId = paymentId)
+            println("Payment state: ${payment.state}")
+        }
         
     } catch (e: Exception) {
         println("Error: $e")
@@ -437,6 +491,26 @@ async def manage_blocktank():
             force_close_after_s=60
         )
         print(f"Channel closed, txid: {close_txid}")
+        
+        # Gift code operations
+        gift_invoice = "lnbc..."  # Gift invoice to pay
+        gift = await gift_pay(invoice=gift_invoice)
+        print(f"Paid gift invoice, gift ID: {gift.id}")
+        
+        gift_code = "GIFT123CODE"
+        client_node_id = "03abcd..."
+        gift_order = await gift_order(
+            client_node_id=client_node_id,
+            code=gift_code
+        )
+        print(f"Created gift order: {gift_order.id}")
+        
+        retrieved_gift = await get_gift(gift_id=gift.id)
+        print(f"Gift status: {retrieved_gift.order.state if retrieved_gift.order else 'unknown'}")
+        
+        if gift.bolt11_payment_id:
+            payment = await get_payment(payment_id=gift.bolt11_payment_id)
+            print(f"Payment state: {payment.state}")
         
     except Exception as e:
         print(f"Error: {e}")
