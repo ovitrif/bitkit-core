@@ -87,11 +87,29 @@ pub fn create_channel_request_url(params: ChannelRequestParams) -> Result<String
 pub fn create_withdraw_callback_url(params: WithdrawCallbackParams) -> Result<String, LnurlError> {
     let mut url = Url::parse(&params.callback)
         .map_err(|_| LnurlError::InvalidAddress)?;
-    
-    url.query_pairs_mut()
-        .append_pair("k1", &params.k1)
-        .append_pair("pr", &params.payment_request);
-    
+
+    // Collect all query parameters, excluding "k1" and "pr"
+    let existing_params: Vec<(String, String)> = url
+        .query_pairs()
+        .filter(|(key, _)| key != "k1" && key != "pr")
+        .map(|(k, v)| (k.to_string(), v.to_string()))
+        .collect();
+
+    // Clear all query parameters
+    url.set_query(None);
+
+    {
+        let mut query_pairs = url.query_pairs_mut();
+        for (key, value) in existing_params {
+            query_pairs.append_pair(&key, &value);
+        }
+
+        // Add the new k1 and pr parameters
+        query_pairs
+            .append_pair("k1", &params.k1)
+            .append_pair("pr", &params.payment_request);
+    }
+
     Ok(url.to_string())
 }
 
