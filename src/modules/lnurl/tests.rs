@@ -251,4 +251,28 @@ mod tests {
         assert!(result.contains("k1="));
         assert!(result.contains("remoteid="));
     }
+
+    #[test]
+    fn test_create_withdraw_callback_url_with_existing_k1() {
+        // Test case where callback URL already contains k1 parameter
+        let params = WithdrawCallbackParams {
+            k1: "new_k1_value".to_string(),
+            callback: "https://example.com/withdraw?k1=existing_k1_value&foo=bar".to_string(),
+            payment_request: "lnbc1230n1pjqqqqqqpp5abcdef...".to_string(),
+        };
+
+        let result = create_withdraw_callback_url(params).unwrap();
+        
+        // Check that we have exactly one k1 parameter (the new one)
+        let k1_count = result.matches("k1=").count();
+        assert_eq!(k1_count, 1, "URL should have exactly 1 k1 parameter after fix");
+        
+        // The URL should contain only the new k1 value
+        assert!(!result.contains("k1=existing_k1_value"), "Old k1 value should be replaced");
+        assert!(result.contains("k1=new_k1_value"), "New k1 value should be present");
+        
+        // Other parameters should be preserved
+        assert!(result.contains("foo=bar"), "Other query parameters should be preserved");
+        assert!(result.contains("pr=lnbc1230n1pjqqqqqqpp5abcdef..."), "Payment request should be added");
+    }
 }
