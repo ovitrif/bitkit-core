@@ -1,3 +1,13 @@
+import java.io.FileInputStream
+import java.util.Properties
+
+// Load github.properties
+val githubProperties = Properties()
+val githubPropertiesFile = rootProject.file("github.properties")
+if (githubPropertiesFile.exists()) {
+    githubProperties.load(FileInputStream(githubPropertiesFile))
+}
+
 // library version is defined in gradle.properties
 val libraryVersion: String by project
 
@@ -66,9 +76,19 @@ dependencies {
 
 afterEvaluate {
     publishing {
+        repositories {
+            maven {
+                name = "GitHubPackages"
+                url = uri("https://maven.pkg.github.com/ovitrif/bitkit-core")
+                credentials {
+                    username = githubProperties.getProperty("gpr.user") as String? ?: project.findProperty("gpr.user") as String? ?: System.getenv("GITHUB_ACTOR")
+                    password = githubProperties.getProperty("gpr.key") as String? ?: project.findProperty("gpr.key") as String? ?: System.getenv("GITHUB_TOKEN")
+                }
+            }
+        }
         publications {
-            create<MavenPublication>("maven") {
-                groupId = "com.synonym"
+            register<MavenPublication>("gpr") {
+                groupId = "com.ovitrif"
                 artifactId = "bitkit-core-android"
                 version = libraryVersion
 
@@ -78,11 +98,11 @@ afterEvaluate {
                     description.set(
                         "Bitkit Core Android bindings library."
                     )
-                    url.set("https://github.com/synonymdev/bitkit-core")
+                    url.set("https://github.com/ovitrif/bitkit-core")
                     licenses {
                         license {
                             name.set("MIT")
-                            url.set("https://github.com/synonymdev/bitkit-core/blob/master/LICENSE")
+                            url.set("https://github.com/ovitrif/bitkit-core/blob/master/LICENSE")
                         }
                     }
                     developers {
@@ -91,6 +111,11 @@ afterEvaluate {
                             name.set("Synonym")
                             email.set("noreply@synonym.to")
                         }
+                    }
+                    scm {
+                        connection.set("scm:git:git://github.com/ovitrif/bitkit-core.git")
+                        developerConnection.set("scm:git:ssh://github.com:ovitrif/bitkit-core.git")
+                        url.set("https://github.com/ovitrif/bitkit-core/tree/master")
                     }
                 }
             }
