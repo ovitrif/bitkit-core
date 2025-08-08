@@ -58,6 +58,7 @@ pub struct LnurlAuthData {
     pub uri: String,
     pub tag: String,
     pub k1: String,
+    pub domain: String,
 }
 
 #[derive(uniffi::Record, Debug, Clone)]

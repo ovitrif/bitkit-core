@@ -55,6 +55,7 @@ fn handle_decode_result(result: Result<Scanner, DecodingError>) {
             println!("URI: {}", data.uri);
             println!("Tag: {}", data.tag);
             println!("K1: {}", data.k1);
+            println!("Domain: {}", data.domain);
         }
 
         Ok(Scanner::LnurlWithdraw { data }) => {
@@ -139,6 +140,10 @@ async fn main() {
     // Test with invalid amount
     println!("\nDecoding invalid gift code: {}", invalid_gift_code);
     handle_decode_result(Scanner::decode(invalid_gift_code.to_string()).await);
-    
+
+    // Test decode other types
+    println!("\n=== Decode Tests ===");
     handle_decode_result(Scanner::decode(lnurl_address.to_string()).await);
+
+    handle_decode_result(Scanner::decode(lnurl_auth.to_string()).await);
 }
