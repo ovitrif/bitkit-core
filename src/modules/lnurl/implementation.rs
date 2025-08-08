@@ -75,11 +75,29 @@ pub fn create_channel_request_url(params: ChannelRequestParams) -> Result<String
     let mut url = Url::parse(&params.callback)
         .map_err(|_| LnurlError::InvalidAddress)?;
     
-    url.query_pairs_mut()
-        .append_pair("k1", &params.k1)
-        .append_pair("remoteid", &params.local_node_id)
-        .append_pair("private", if params.is_private { "1" } else { "0" })
-        .append_pair("cancel", if params.cancel { "1" } else { "0" });
+    // Collect all query parameters, excluding "k1"
+    let existing_params: Vec<(String, String)> = url
+        .query_pairs()
+        .filter(|(key, _)| key != "k1")
+        .map(|(k, v)| (k.to_string(), v.to_string()))
+        .collect();
+
+    // Clear all query parameters
+    url.set_query(None);
+
+    {
+        let mut query_pairs = url.query_pairs_mut();
+        for (key, value) in existing_params {
+            query_pairs.append_pair(&key, &value);
+        }
+
+        // Add the new k1 and other parameters
+        query_pairs
+            .append_pair("k1", &params.k1)
+            .append_pair("remoteid", &params.local_node_id)
+            .append_pair("private", if params.is_private { "1" } else { "0" })
+            .append_pair("cancel", if params.cancel { "1" } else { "0" });
+    }
     
     Ok(url.to_string())
 }
