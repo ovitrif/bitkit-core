@@ -155,9 +155,13 @@ pub async fn lnurl_auth(params: LnurlAuthParams) -> Result<String, LnurlError> {
     
     let signature = secp.sign_ecdsa(&message, &private_key);
     
-    let lnurl = LnUrl::from_str(&params.callback)
-        .map_err(|_| LnurlError::InvalidAddress)?;
-    
+    let lnurl = if params.callback.starts_with("lnurl1") {
+        LnUrl::from_str(&params.callback)
+            .map_err(|_| LnurlError::InvalidAddress)?
+    } else {
+        LnUrl { url: params.callback }
+    };
+
     let client = create_async_client()?;
     
     let response = client.lnurl_auth(lnurl, signature, public_key).await

@@ -213,6 +213,37 @@ mod tests {
         assert!(matches!(result, Err(LnurlError::AuthenticationFailed)));
     }
 
+    #[tokio::test]
+    async fn test_lnurl_auth_callback_encoded() {
+        let params = LnurlAuthParams {
+            domain: "example.com".to_string(),
+            k1: "03cb12a5ac8930403c5f8bd9e38dd1e1c07f93a1379d139658fac53183232e19".to_string(),
+            callback: "lnurl1dp68gup69uhkcmmrv9kxsmmnwsarxvpsxqhkzat5dq3xqhlx".to_string(),
+            hashing_key: [1u8; 32],
+        };
+
+        let result = lnurl_auth(params).await;
+
+        assert!(result.is_err());
+        assert!(matches!(result, Err(LnurlError::RequestFailed)));
+    }
+
+    #[tokio::test]
+    async fn test_lnurl_auth_callback_decoded() {
+        let params = LnurlAuthParams {
+            domain: "example.com".to_string(),
+            k1: "03cb12a5ac8930403c5f8bd9e38dd1e1c07f93a1379d139658fac53183232e19".to_string(),
+            callback: "https://example.com/auth".to_string(),
+            hashing_key: [1u8; 32],
+        };
+
+        let result = lnurl_auth(params).await;
+
+        assert!(result.is_err());
+        // Error should not be InvalidAddress
+        assert!(matches!(result, Err(LnurlError::RequestFailed)));
+    }
+
     #[test]
     fn test_channel_request_params_creation() {
         let params = ChannelRequestParams {
