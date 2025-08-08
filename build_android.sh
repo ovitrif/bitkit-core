@@ -152,7 +152,7 @@ fi
 # Sync version
 echo "Syncing version from Cargo.toml..."
 CARGO_VERSION=$(grep '^version = ' Cargo.toml | sed 's/version = "\(.*\)"/\1/' | head -1)
-sed -i.bak "s/^libraryVersion=.*/libraryVersion=$CARGO_VERSION/" "$ANDROID_LIB_DIR/gradle.properties"
+sed -i.bak "s/^version=.*/version=$CARGO_VERSION/" "$ANDROID_LIB_DIR/gradle.properties"
 rm -f "$ANDROID_LIB_DIR/gradle.properties.bak"
 
 # Verify android library publish
