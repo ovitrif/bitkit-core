@@ -45,6 +45,31 @@ mod tests {
     }
 
     #[test]
+    fn test_create_channel_request_url_with_existing_k1() {
+        // Test case where the callback URL already contains k1 parameter
+        let params = ChannelRequestParams {
+            k1: "new_k1_value".to_string(),
+            callback: "https://example.com/callback?k1=existing_k1_value&foo=bar".to_string(),
+            local_node_id: "03abcd1234567890abcd1234567890abcd1234567890abcd1234567890abcd1234".to_string(),
+            is_private: false,
+            cancel: true,
+        };
+
+        let result = create_channel_request_url(params).unwrap();
+
+        // Check that we have exactly one k1 parameter (the new one)
+        let k1_count = result.matches("k1=").count();
+        assert_eq!(k1_count, 1, "URL should have exactly 1 k1 parameter after fix");
+
+        // The URL should contain only the new k1 value
+        assert!(!result.contains("k1=existing_k1_value"), "Old k1 value should be replaced");
+        assert!(result.contains("k1=new_k1_value"), "New k1 value should be present");
+
+        // Other parameters should be preserved
+        assert!(result.contains("foo=bar"), "Other query parameters should be preserved");
+    }
+
+    #[test]
     fn test_create_withdraw_callback_url() {
         let params = WithdrawCallbackParams {
             k1: "test_k1_value".to_string(),
@@ -186,6 +211,37 @@ mod tests {
         let result = lnurl_auth(params).await;
         assert!(result.is_err());
         assert!(matches!(result, Err(LnurlError::AuthenticationFailed)));
+    }
+
+    #[tokio::test]
+    async fn test_lnurl_auth_callback_encoded() {
+        let params = LnurlAuthParams {
+            domain: "example.com".to_string(),
+            k1: "03cb12a5ac8930403c5f8bd9e38dd1e1c07f93a1379d139658fac53183232e19".to_string(),
+            callback: "lnurl1dp68gup69uhkcmmrv9kxsmmnwsarxvpsxqhkzat5dq3xqhlx".to_string(),
+            hashing_key: [1u8; 32],
+        };
+
+        let result = lnurl_auth(params).await;
+
+        assert!(result.is_err());
+        assert!(matches!(result, Err(LnurlError::RequestFailed)));
+    }
+
+    #[tokio::test]
+    async fn test_lnurl_auth_callback_decoded() {
+        let params = LnurlAuthParams {
+            domain: "example.com".to_string(),
+            k1: "03cb12a5ac8930403c5f8bd9e38dd1e1c07f93a1379d139658fac53183232e19".to_string(),
+            callback: "https://example.com/auth".to_string(),
+            hashing_key: [1u8; 32],
+        };
+
+        let result = lnurl_auth(params).await;
+
+        assert!(result.is_err());
+        // Error should not be InvalidAddress
+        assert!(matches!(result, Err(LnurlError::RequestFailed)));
     }
 
     #[test]

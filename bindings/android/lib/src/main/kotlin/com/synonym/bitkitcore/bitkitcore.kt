@@ -3591,7 +3591,8 @@ public object FfiConverterTypeLnurlAddressData: FfiConverterRustBuffer<LnurlAddr
 data class LnurlAuthData (
     var `uri`: kotlin.String, 
     var `tag`: kotlin.String, 
-    var `k1`: kotlin.String
+    var `k1`: kotlin.String, 
+    var `domain`: kotlin.String
 ) {
     
     companion object
@@ -3603,19 +3604,22 @@ public object FfiConverterTypeLnurlAuthData: FfiConverterRustBuffer<LnurlAuthDat
             FfiConverterString.read(buf),
             FfiConverterString.read(buf),
             FfiConverterString.read(buf),
+            FfiConverterString.read(buf),
         )
     }
 
     override fun allocationSize(value: LnurlAuthData) = (
             FfiConverterString.allocationSize(value.`uri`) +
             FfiConverterString.allocationSize(value.`tag`) +
-            FfiConverterString.allocationSize(value.`k1`)
+            FfiConverterString.allocationSize(value.`k1`) +
+            FfiConverterString.allocationSize(value.`domain`)
     )
 
     override fun write(value: LnurlAuthData, buf: ByteBuffer) {
             FfiConverterString.write(value.`uri`, buf)
             FfiConverterString.write(value.`tag`, buf)
             FfiConverterString.write(value.`k1`, buf)
+            FfiConverterString.write(value.`domain`, buf)
     }
 }
 

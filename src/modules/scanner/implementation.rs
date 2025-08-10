@@ -207,11 +207,16 @@ impl Scanner {
                 .map(|(_, value)| value.to_string())
                 .ok_or(DecodingError::InvalidFormat)?;
 
+            let domain = parsed_url.host_str()
+                .ok_or(DecodingError::InvalidFormat)?
+                .to_string();
+
             return Ok(Scanner::LnurlAuth {
                 data: LnurlAuthData {
                     uri: lnurl.url,
                     tag: "login".to_string(),
                     k1,
+                    domain,
                 }
             });
         }

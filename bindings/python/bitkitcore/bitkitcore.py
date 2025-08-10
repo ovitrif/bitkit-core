@@ -4471,14 +4471,16 @@ class LnurlAuthData:
     uri: "str"
     tag: "str"
     k1: "str"
+    domain: "str"
     @typing.no_type_check
-    def __init__(self, *, uri: "str", tag: "str", k1: "str"):
+    def __init__(self, *, uri: "str", tag: "str", k1: "str", domain: "str"):
         self.uri = uri
         self.tag = tag
         self.k1 = k1
+        self.domain = domain
 
     def __str__(self):
-        return "LnurlAuthData(uri={}, tag={}, k1={})".format(self.uri, self.tag, self.k1)
+        return "LnurlAuthData(uri={}, tag={}, k1={}, domain={})".format(self.uri, self.tag, self.k1, self.domain)
 
     def __eq__(self, other):
         if self.uri != other.uri:
@@ -4486,6 +4488,8 @@ class LnurlAuthData:
         if self.tag != other.tag:
             return False
         if self.k1 != other.k1:
+            return False
+        if self.domain != other.domain:
             return False
         return True
 
@@ -4496,6 +4500,7 @@ class _UniffiConverterTypeLnurlAuthData(_UniffiConverterRustBuffer):
             uri=_UniffiConverterString.read(buf),
             tag=_UniffiConverterString.read(buf),
             k1=_UniffiConverterString.read(buf),
+            domain=_UniffiConverterString.read(buf),
         )
 
     @staticmethod
@@ -4503,12 +4508,14 @@ class _UniffiConverterTypeLnurlAuthData(_UniffiConverterRustBuffer):
         _UniffiConverterString.check_lower(value.uri)
         _UniffiConverterString.check_lower(value.tag)
         _UniffiConverterString.check_lower(value.k1)
+        _UniffiConverterString.check_lower(value.domain)
 
     @staticmethod
     def write(value, buf):
         _UniffiConverterString.write(value.uri, buf)
         _UniffiConverterString.write(value.tag, buf)
         _UniffiConverterString.write(value.k1, buf)
+        _UniffiConverterString.write(value.domain, buf)
 
 
 class LnurlChannelData:
