@@ -1,6 +1,3 @@
-// library version is defined in gradle.properties
-val libraryVersion: String by project
-
 plugins {
     id("com.android.library")
     id("org.jetbrains.kotlin.android") version "1.9.10"
@@ -68,16 +65,15 @@ afterEvaluate {
     publishing {
         publications {
             create<MavenPublication>("maven") {
-                groupId = "com.synonym"
-                artifactId = "bitkit-core-android"
-                version = libraryVersion
+                val mavenArtifactId = "bitkit-core-android"
+                groupId = providers.gradleProperty("group").orNull ?: "com.synonym"
+                artifactId = mavenArtifactId
+                version = providers.gradleProperty("version").orNull ?: "0.0.0"
 
                 from(components["release"])
                 pom {
-                    name.set("bitkit-core-android")
-                    description.set(
-                        "Bitkit Core Android bindings library."
-                    )
+                    name.set(mavenArtifactId)
+                    description.set("Bitkit Core Android bindings.")
                     url.set("https://github.com/synonymdev/bitkit-core")
                     licenses {
                         license {
@@ -92,6 +88,19 @@ afterEvaluate {
                             email.set("noreply@synonym.to")
                         }
                     }
+                }
+            }
+        }
+        repositories {
+            maven {
+                val repo = System.getenv("GITHUB_REPO")
+                    ?: providers.gradleProperty("gpr.repo").orNull
+                    ?: "synonymdev/bitkit-core"
+                name = "GitHubPackages"
+                url = uri("https://maven.pkg.github.com/$repo")
+                credentials {
+                    username = System.getenv("GITHUB_ACTOR") ?: providers.gradleProperty("gpr.user").orNull
+                    password = System.getenv("GITHUB_TOKEN") ?: providers.gradleProperty("gpr.key").orNull
                 }
             }
         }

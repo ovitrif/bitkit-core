@@ -8,8 +8,5 @@ buildscript {
     }
 }
 
-// library version is defined in gradle.properties
-val libraryVersion: String by project
-
-group = "com.synonym"
-version = libraryVersion
+group = providers.gradleProperty("group").orNull ?: "com.synonym"
+version = providers.gradleProperty("version").orNull ?: "0.0.0"
